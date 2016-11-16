@@ -120,10 +120,10 @@ dependencies {
     compile "io.swagger:swagger-annotations:$swagger_annotations_version"
     compile "org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:$oltu_version"
     {{#joda}}
-    compile 'joda-time:joda-time:$jodatime_version'
+    compile "joda-time:joda-time:$jodatime_version"
     {{/joda}}
     {{#threetenbp}}
-    compile 'org.threeten:threetenbp:$threetenbp_version'
+    compile "org.threeten:threetenbp:$threetenbp_version"
     {{/threetenbp}}
 
     testCompile "junit:junit:$junit_version"
