@@ -23,7 +23,7 @@ public enum {{classname}}: {{dataType}} {
 {{/isEnum}}
 {{^isEnum}}
 {{#vars.isEmpty}}
-public typealias {{classname}} = {{dataType}}
+public typealias {{classname}} = {{parent}}
 {{/vars.isEmpty}}
 {{^vars.isEmpty}}
 open class {{classname}}: {{#parent}}{{{parent}}}{{/parent}}{{^parent}}JSONEncodable{{/parent}} {
