@@ -428,7 +428,7 @@ public class Swift3Codegen extends DefaultCodegen implements CodegenConfig {
         }
         if (allDefinitions != null && codegenModel.parentSchema != null) {
             final Model parentModel = allDefinitions.get(codegenModel.parentSchema);
-            final CodegenModel parentCodegenModel = super.fromModel(codegenModel.parent, parentModel);
+            final CodegenModel parentCodegenModel = super.fromModel(codegenModel.parent, parentModel, allDefinitions);
             codegenModel = Swift3Codegen.reconcileProperties(codegenModel, parentCodegenModel);
         }
 
