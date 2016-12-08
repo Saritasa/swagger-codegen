@@ -67,6 +67,7 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
                         "Integer",
                         "Long",
                         "Float",
+                        "Guid",
                         "System.IO.Stream", // not really a primitive, we include it to avoid model import
                         "Object")
         );
@@ -88,6 +89,7 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         typeMapping.put("list", "List");
         typeMapping.put("map", "Dictionary");
         typeMapping.put("object", "Object");
+        typeMapping.put("uuid", "Guid");
 
         nullableTypes.addAll(
                 Arrays.asList(
@@ -96,7 +98,8 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
                         "float",
                         "long",
                         "double",
-                        "DateTime")
+                        "DateTime",
+                        "Guid")
         );
 
         cliOptions.clear();
