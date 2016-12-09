@@ -6,6 +6,7 @@ import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
 import io.swagger.codegen.SupportingFile;
 import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.MapProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.codegen.CliOption;
@@ -17,6 +18,8 @@ import java.util.HashSet;
 
 public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements CodegenConfig {
     public static final String CLIENT_PACKAGE = "clientPackage";
+    public static final String USE_FIELDS = "useFields";
+
     protected String packageName = "IO.Swagger";
     protected String packageVersion = "1.0.0";
     protected String clientPackage = "IO.Swagger.Client";
@@ -32,7 +35,6 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         importMapping.clear();
 
         outputFolder = "generated-code" + File.separator + "CsharpDotNet2";
-        modelTemplateFiles.put("model.mustache", ".cs");
         apiTemplateFiles.put("api.mustache", ".cs");
         embeddedTemplateDir = templateDir = "CsharpDotNet2";
         apiPackage = "IO.Swagger.Api";
@@ -108,6 +110,8 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         cliOptions.add(new CliOption(CodegenConstants.PACKAGE_VERSION, "C# package version.").defaultValue("1.0.0"));
         cliOptions.add(new CliOption(CLIENT_PACKAGE, "C# client package name (convention: Camel.Case).")
                 .defaultValue("IO.Swagger.Client"));
+        cliOptions.add(new CliOption(USE_FIELDS, "Use fields, not properties for model generation", BooleanProperty.TYPE)
+                .defaultValue(Boolean.FALSE.toString()));
     }
 
     @Override
@@ -135,6 +139,12 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
             additionalProperties.put(CLIENT_PACKAGE, clientPackage);
         }
 
+        // [SK]: Introduce new property which forces generator to use fields instead of properties
+        if (additionalProperties.containsKey(USE_FIELDS)) {
+            boolean useFields = Boolean.valueOf(additionalProperties.get(USE_FIELDS).toString());
+            setUseFields(useFields);
+        }
+
         supportingFiles.add(new SupportingFile("Configuration.mustache",
                 sourceFolder + File.separator + clientPackage.replace(".", java.io.File.separator), "Configuration.cs"));
         supportingFiles.add(new SupportingFile("ApiClient.mustache",
@@ -157,6 +167,15 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
 
     public void setPackageVersion(String packageVersion) {
         this.packageVersion = packageVersion;
+    }
+
+    public void setUseFields(boolean useFields) {
+        modelTemplateFiles.clear();
+        if (useFields) {
+            modelTemplateFiles.put("model_use_fields.mustache", ".cs");
+        } else {
+            modelTemplateFiles.put("model.mustache", ".cs");
+        }
     }
 
     @Override

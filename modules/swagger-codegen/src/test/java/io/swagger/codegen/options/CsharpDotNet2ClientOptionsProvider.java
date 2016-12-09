@@ -11,6 +11,7 @@ public class CsharpDotNet2ClientOptionsProvider implements OptionsProvider {
     public static final String PACKAGE_NAME_VALUE = "swagger_client_csharp_dotnet";
     public static final String PACKAGE_VERSION_VALUE = "1.0.0-SNAPSHOT";
     public static final String CLIENT_PACKAGE_VALUE = "IO.Swagger.Client.Test";
+    public static final String USE_FIELDS = "false";
 
     @Override
     public String getLanguage() {
@@ -23,6 +24,7 @@ public class CsharpDotNet2ClientOptionsProvider implements OptionsProvider {
         return builder.put(CodegenConstants.PACKAGE_NAME, PACKAGE_NAME_VALUE)
                 .put(CodegenConstants.PACKAGE_VERSION, PACKAGE_VERSION_VALUE)
                 .put(CsharpDotNet2ClientCodegen.CLIENT_PACKAGE, CLIENT_PACKAGE_VALUE)
+                .put(CsharpDotNet2ClientCodegen.USE_FIELDS, USE_FIELDS)
                 .build();
     }
 
