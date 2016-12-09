@@ -18,7 +18,7 @@ import java.util.HashSet;
 
 public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements CodegenConfig {
     public static final String CLIENT_PACKAGE = "clientPackage";
-    public static final String USE_FIELDS = "useFields";
+    public static final String UNITY3D_MODE = "unity3DMode";
 
     protected String packageName = "IO.Swagger";
     protected String packageVersion = "1.0.0";
@@ -110,7 +110,7 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         cliOptions.add(new CliOption(CodegenConstants.PACKAGE_VERSION, "C# package version.").defaultValue("1.0.0"));
         cliOptions.add(new CliOption(CLIENT_PACKAGE, "C# client package name (convention: Camel.Case).")
                 .defaultValue("IO.Swagger.Client"));
-        cliOptions.add(new CliOption(USE_FIELDS, "Use fields, not properties for model generation", BooleanProperty.TYPE)
+        cliOptions.add(new CliOption(UNITY3D_MODE, "Enables Unity3D mode: use custom template for model]", BooleanProperty.TYPE)
                 .defaultValue(Boolean.FALSE.toString()));
     }
 
@@ -140,9 +140,9 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         }
 
         // [SK]: Introduce new property which forces generator to use fields instead of properties
-        if (additionalProperties.containsKey(USE_FIELDS)) {
-            boolean useFields = Boolean.valueOf(additionalProperties.get(USE_FIELDS).toString());
-            setUseFields(useFields);
+        if (additionalProperties.containsKey(UNITY3D_MODE)) {
+            boolean unity3dMode = Boolean.valueOf(additionalProperties.get(UNITY3D_MODE).toString());
+            setUnity3dMode(unity3dMode);
         }
 
         supportingFiles.add(new SupportingFile("Configuration.mustache",
@@ -169,10 +169,10 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         this.packageVersion = packageVersion;
     }
 
-    public void setUseFields(boolean useFields) {
+    public void setUnity3dMode(boolean unity3dMode) {
         modelTemplateFiles.clear();
-        if (useFields) {
-            modelTemplateFiles.put("model_use_fields.mustache", ".cs");
+        if (unity3dMode) {
+            modelTemplateFiles.put("model_unity3d.mustache", ".cs");
         } else {
             modelTemplateFiles.put("model.mustache", ".cs");
         }
