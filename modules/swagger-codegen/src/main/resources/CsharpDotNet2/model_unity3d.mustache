@@ -19,7 +19,8 @@ namespace {{packageName}}.Model
         /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
         /// </summary>{{#description}}
         /// <value>{{{description}}}</value>{{/description}}
-        [JsonProperty(PropertyName = "{{baseName}}")]
+        [JsonProperty(PropertyName = "{{baseName}}"{{^vendorExtensions.x-nullable}},
+                      Required = Required.DisallowNull{{/vendorExtensions.x-nullable}})]
         public {{{datatype}}} {{name}};
 
         {{/vars}}
