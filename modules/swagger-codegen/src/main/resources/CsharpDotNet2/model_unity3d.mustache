@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 {{#models}}
@@ -12,7 +11,7 @@ namespace {{packageName}}.Model
     /// <summary>
     /// {{description}}
     /// </summary>
-    [DataContract]
+    [Serializable]
     public class {{classname}}{{#parent}} : {{{parent}}}{{/parent}}
     {
         {{#vars}}
@@ -20,9 +19,9 @@ namespace {{packageName}}.Model
         /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
         /// </summary>{{#description}}
         /// <value>{{{description}}}</value>{{/description}}
-        [DataMember(Name="{{baseName}}", EmitDefaultValue=false)]
-        [JsonProperty(PropertyName = "{{baseName}}")]
-        public {{{datatype}}} {{name}} { get; set; }
+        [JsonProperty(PropertyName = "{{baseName}}"{{^vendorExtensions.x-nullable}},
+                      Required = Required.DisallowNull{{/vendorExtensions.x-nullable}})]
+        public {{{datatype}}} {{name}};
 
         {{/vars}}
 

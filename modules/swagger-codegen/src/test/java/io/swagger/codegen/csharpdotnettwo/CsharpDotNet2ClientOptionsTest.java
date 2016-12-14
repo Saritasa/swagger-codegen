@@ -32,6 +32,8 @@ public class CsharpDotNet2ClientOptionsTest extends AbstractOptionsTest {
             times = 1;
             clientCodegen.setClientPackage(CsharpDotNet2ClientOptionsProvider.CLIENT_PACKAGE_VALUE);
             times = 1;
+            clientCodegen.setUnity3dMode(Boolean.valueOf(CsharpDotNet2ClientOptionsProvider.UNITY3D_MODE));
+            times = 1;
         }};
     }
 }
