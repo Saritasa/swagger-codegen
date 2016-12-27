@@ -1,20 +1,13 @@
 package io.swagger.codegen.languages;
 
-import io.swagger.codegen.CodegenConfig;
-import io.swagger.codegen.CodegenConstants;
-import io.swagger.codegen.CodegenType;
-import io.swagger.codegen.DefaultCodegen;
-import io.swagger.codegen.SupportingFile;
+import io.swagger.codegen.*;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.MapProperty;
 import io.swagger.models.properties.Property;
-import io.swagger.codegen.CliOption;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements CodegenConfig {
     public static final String CLIENT_PACKAGE = "clientPackage";
@@ -176,6 +169,44 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
         } else {
             modelTemplateFiles.put("model.mustache", ".cs");
         }
+    }
+
+    @Override
+    public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
+
+        // Index all CodegenModels by model name.
+        Map<String, CodegenModel> allModels = new HashMap<String, CodegenModel>();
+        for (Map.Entry<String, Object> entry : objs.entrySet()) {
+            String modelName = toModelName(entry.getKey());
+            Map<String, Object> inner = (Map<String, Object>) entry.getValue();
+            List<Map<String, Object>> models = (List<Map<String, Object>>) inner.get("models");
+            for (Map<String, Object> mo : models) {
+                CodegenModel cm = (CodegenModel) mo.get("model");
+                allModels.put(modelName, cm);
+            }
+        }
+
+        // It is not possible to set additional parameters when use json $ref
+        // Details: https://github.com/OAI/OpenAPI-Specification/issues/241
+        // Take vendorExtensions from referenced model
+        for (CodegenModel cm : allModels.values()) {
+            if (cm.vars == null)
+                continue;
+            for (CodegenProperty cp : cm.vars) {
+                if (cp.isPrimitiveType != null && cp.isPrimitiveType)
+                    continue;
+
+                CodegenModel refModel = allModels.get(cp.datatype);
+                if (refModel != null) {
+                    Map<String, Object> tmp = new HashMap<String, Object>();
+                    tmp.putAll(refModel.vendorExtensions);
+                    // rewrite per model extensions by per property extensions
+                    tmp.putAll(cp.vendorExtensions);
+                    cp.vendorExtensions.putAll(tmp);
+                }
+            }
+        }
+        return objs;
     }
 
     @Override
