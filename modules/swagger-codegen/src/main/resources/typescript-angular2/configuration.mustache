@@ -1,5 +1,5 @@
 export interface ConfigurationParameters {
-	apiKey?: string;
+	apiKeys?: {[ key: string ]: string};
 	username?: string;
 	password?: string;
 	accessToken?: string;
@@ -7,15 +7,15 @@ export interface ConfigurationParameters {
 }
 
 export class Configuration {
-	apiKey: string;
+	apiKeys: {[ key: string ]: string};
 	username: string;
 	password: string;
-	accessToken: string;
+	accessToken: string | (() => string);
 	basePath: string;
 
 
 	constructor(configurationParameters: ConfigurationParameters = {}) {
-		this.apiKey = configurationParameters.apiKey;
+		this.apiKeys = configurationParameters.apiKeys;
 		this.username = configurationParameters.username;
 		this.password = configurationParameters.password;
 		this.accessToken = configurationParameters.accessToken;

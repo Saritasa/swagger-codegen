@@ -1,6 +1,6 @@
 # petstore_api.FakeApi
 
-All URIs are relative to *http://petstore.swagger.io/v2*
+All URIs are relative to *http://petstore.swagger.io:80/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -11,6 +11,8 @@ Method | HTTP request | Description
 
 # **test_client_model**
 > Client test_client_model(body)
+
+To test \"client\" model
 
 To test \"client\" model
 
@@ -71,11 +73,12 @@ from petstore_api.rest import ApiException
 from pprint import pprint
 
 # Configure HTTP basic authorization: http_basic_test
-petstore_api.configuration.username = 'YOUR_USERNAME'
-petstore_api.configuration.password = 'YOUR_PASSWORD'
+configuration = petstore_api.Configuration()
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
 # create an instance of the API class
-api_instance = petstore_api.FakeApi()
+api_instance = petstore_api.FakeApi(petstore_api.ApiClient(configuration))
 number = 3.4 # float | None
 double = 1.2 # float | None
 pattern_without_delimiter = 'pattern_without_delimiter_example' # str | None
@@ -137,6 +140,8 @@ void (empty response body)
 
 To test enum parameters
 
+To test enum parameters
+
 ### Example 
 ```python
 from __future__ import print_statement
@@ -153,7 +158,7 @@ enum_header_string_array = ['enum_header_string_array_example'] # list[str] | He
 enum_header_string = '-efg' # str | Header parameter enum test (string) (optional) (default to -efg)
 enum_query_string_array = ['enum_query_string_array_example'] # list[str] | Query parameter enum test (string array) (optional)
 enum_query_string = '-efg' # str | Query parameter enum test (string) (optional) (default to -efg)
-enum_query_integer = 3.4 # float | Query parameter enum test (double) (optional)
+enum_query_integer = 56 # int | Query parameter enum test (double) (optional)
 enum_query_double = 1.2 # float | Query parameter enum test (double) (optional)
 
 try: 
@@ -173,7 +178,7 @@ Name | Type | Description  | Notes
  **enum_header_string** | **str**| Header parameter enum test (string) | [optional] [default to -efg]
  **enum_query_string_array** | [**list[str]**](str.md)| Query parameter enum test (string array) | [optional] 
  **enum_query_string** | **str**| Query parameter enum test (string) | [optional] [default to -efg]
- **enum_query_integer** | **float**| Query parameter enum test (double) | [optional] 
+ **enum_query_integer** | **int**| Query parameter enum test (double) | [optional] 
  **enum_query_double** | **float**| Query parameter enum test (double) | [optional] 
 
 ### Return type
