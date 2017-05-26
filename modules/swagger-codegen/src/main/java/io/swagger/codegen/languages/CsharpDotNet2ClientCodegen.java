@@ -202,7 +202,7 @@ public class CsharpDotNet2ClientCodegen extends DefaultCodegen implements Codege
             if (cm.vars == null)
                 continue;
             for (CodegenProperty cp : cm.vars) {
-                if (cp.isPrimitiveType != null && cp.isPrimitiveType)
+                if (cp.isPrimitiveType)
                     continue;
 
                 CodegenModel refModel = allModels.get(cp.datatype);
