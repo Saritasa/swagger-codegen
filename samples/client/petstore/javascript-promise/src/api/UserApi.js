@@ -9,17 +9,6 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 (function(root, factory) {
@@ -61,13 +50,13 @@
      * Create user
      * This can only be done by the logged in user.
      * @param {module:model/User} body Created user object
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    this.createUser = function(body) {
+    this.createUserWithHttpInfo = function(body) {
       var postBody = body;
 
       // verify the required parameter 'body' is set
-      if (body == undefined || body == null) {
+      if (body === undefined || body === null) {
         throw new Error("Missing the required parameter 'body' when calling createUser");
       }
 
@@ -75,6 +64,8 @@
       var pathParams = {
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -88,9 +79,22 @@
 
       return this.apiClient.callApi(
         '/user', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Create user
+     * This can only be done by the logged in user.
+     * @param {module:model/User} body Created user object
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     */
+    this.createUser = function(body) {
+      return this.createUserWithHttpInfo(body)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
@@ -98,13 +102,13 @@
      * Creates list of users with given input array
      * 
      * @param {Array.<module:model/User>} body List of user object
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    this.createUsersWithArrayInput = function(body) {
+    this.createUsersWithArrayInputWithHttpInfo = function(body) {
       var postBody = body;
 
       // verify the required parameter 'body' is set
-      if (body == undefined || body == null) {
+      if (body === undefined || body === null) {
         throw new Error("Missing the required parameter 'body' when calling createUsersWithArrayInput");
       }
 
@@ -112,6 +116,8 @@
       var pathParams = {
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -125,11 +131,10 @@
 
       return this.apiClient.callApi(
         '/user/createWithArray', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
     }
-
 
     /**
      * Creates list of users with given input array
@@ -137,11 +142,25 @@
      * @param {Array.<module:model/User>} body List of user object
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}
      */
-    this.createUsersWithListInput = function(body) {
+    this.createUsersWithArrayInput = function(body) {
+      return this.createUsersWithArrayInputWithHttpInfo(body)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * Creates list of users with given input array
+     * 
+     * @param {Array.<module:model/User>} body List of user object
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
+     */
+    this.createUsersWithListInputWithHttpInfo = function(body) {
       var postBody = body;
 
       // verify the required parameter 'body' is set
-      if (body == undefined || body == null) {
+      if (body === undefined || body === null) {
         throw new Error("Missing the required parameter 'body' when calling createUsersWithListInput");
       }
 
@@ -149,6 +168,8 @@
       var pathParams = {
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -162,9 +183,22 @@
 
       return this.apiClient.callApi(
         '/user/createWithList', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Creates list of users with given input array
+     * 
+     * @param {Array.<module:model/User>} body List of user object
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     */
+    this.createUsersWithListInput = function(body) {
+      return this.createUsersWithListInputWithHttpInfo(body)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
@@ -172,13 +206,13 @@
      * Delete user
      * This can only be done by the logged in user.
      * @param {String} username The name that needs to be deleted
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    this.deleteUser = function(username) {
+    this.deleteUserWithHttpInfo = function(username) {
       var postBody = null;
 
       // verify the required parameter 'username' is set
-      if (username == undefined || username == null) {
+      if (username === undefined || username === null) {
         throw new Error("Missing the required parameter 'username' when calling deleteUser");
       }
 
@@ -187,6 +221,8 @@
         'username': username
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -200,9 +236,22 @@
 
       return this.apiClient.callApi(
         '/user/{username}', 'DELETE',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Delete user
+     * This can only be done by the logged in user.
+     * @param {String} username The name that needs to be deleted
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     */
+    this.deleteUser = function(username) {
+      return this.deleteUserWithHttpInfo(username)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
@@ -210,13 +259,13 @@
      * Get user by user name
      * 
      * @param {String} username The name that needs to be fetched. Use user1 for testing. 
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/User}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/User} and HTTP response
      */
-    this.getUserByName = function(username) {
+    this.getUserByNameWithHttpInfo = function(username) {
       var postBody = null;
 
       // verify the required parameter 'username' is set
-      if (username == undefined || username == null) {
+      if (username === undefined || username === null) {
         throw new Error("Missing the required parameter 'username' when calling getUserByName");
       }
 
@@ -225,6 +274,8 @@
         'username': username
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -238,9 +289,22 @@
 
       return this.apiClient.callApi(
         '/user/{username}', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Get user by user name
+     * 
+     * @param {String} username The name that needs to be fetched. Use user1 for testing. 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/User}
+     */
+    this.getUserByName = function(username) {
+      return this.getUserByNameWithHttpInfo(username)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
@@ -249,18 +313,18 @@
      * 
      * @param {String} username The user name for login
      * @param {String} password The password for login in clear text
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link 'String'}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link 'String'} and HTTP response
      */
-    this.loginUser = function(username, password) {
+    this.loginUserWithHttpInfo = function(username, password) {
       var postBody = null;
 
       // verify the required parameter 'username' is set
-      if (username == undefined || username == null) {
+      if (username === undefined || username === null) {
         throw new Error("Missing the required parameter 'username' when calling loginUser");
       }
 
       // verify the required parameter 'password' is set
-      if (password == undefined || password == null) {
+      if (password === undefined || password === null) {
         throw new Error("Missing the required parameter 'password' when calling loginUser");
       }
 
@@ -269,7 +333,9 @@
       };
       var queryParams = {
         'username': username,
-        'password': password
+        'password': password,
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -283,24 +349,40 @@
 
       return this.apiClient.callApi(
         '/user/login', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Logs user into the system
+     * 
+     * @param {String} username The user name for login
+     * @param {String} password The password for login in clear text
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link 'String'}
+     */
+    this.loginUser = function(username, password) {
+      return this.loginUserWithHttpInfo(username, password)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
     /**
      * Logs out current logged in user session
      * 
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    this.logoutUser = function() {
+    this.logoutUserWithHttpInfo = function() {
       var postBody = null;
 
 
       var pathParams = {
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -314,9 +396,21 @@
 
       return this.apiClient.callApi(
         '/user/logout', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Logs out current logged in user session
+     * 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     */
+    this.logoutUser = function() {
+      return this.logoutUserWithHttpInfo()
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
 
 
@@ -325,18 +419,18 @@
      * This can only be done by the logged in user.
      * @param {String} username name that need to be deleted
      * @param {module:model/User} body Updated user object
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
-    this.updateUser = function(username, body) {
+    this.updateUserWithHttpInfo = function(username, body) {
       var postBody = body;
 
       // verify the required parameter 'username' is set
-      if (username == undefined || username == null) {
+      if (username === undefined || username === null) {
         throw new Error("Missing the required parameter 'username' when calling updateUser");
       }
 
       // verify the required parameter 'body' is set
-      if (body == undefined || body == null) {
+      if (body === undefined || body === null) {
         throw new Error("Missing the required parameter 'body' when calling updateUser");
       }
 
@@ -345,6 +439,8 @@
         'username': username
       };
       var queryParams = {
+      };
+      var collectionQueryParams = {
       };
       var headerParams = {
       };
@@ -358,9 +454,23 @@
 
       return this.apiClient.callApi(
         '/user/{username}', 'PUT',
-        pathParams, queryParams, headerParams, formParams, postBody,
+        pathParams, queryParams, collectionQueryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType
       );
+    }
+
+    /**
+     * Updated user
+     * This can only be done by the logged in user.
+     * @param {String} username name that need to be deleted
+     * @param {module:model/User} body Updated user object
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}
+     */
+    this.updateUser = function(username, body) {
+      return this.updateUserWithHttpInfo(username, body)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
     }
   };
 

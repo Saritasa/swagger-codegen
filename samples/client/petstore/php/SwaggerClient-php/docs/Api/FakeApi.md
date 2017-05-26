@@ -1,6 +1,6 @@
 # Swagger\Client\FakeApi
 
-All URIs are relative to *http://petstore.swagger.io/v2*
+All URIs are relative to *http://petstore.swagger.io:80/v2*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -14,12 +14,14 @@ Method | HTTP request | Description
 
 To test \"client\" model
 
+To test \"client\" model
+
 ### Example
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\FakeApi();
+$api_instance = new Swagger\Client\Api\FakeApi(new \Http\Adapter\Guzzle6\Client());
 $body = new \Swagger\Client\Model\Client(); // \Swagger\Client\Model\Client | client model
 
 try {
@@ -53,7 +55,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 # **testEndpointParameters**
-> testEndpointParameters($number, $double, $pattern_without_delimiter, $byte, $integer, $int32, $int64, $float, $string, $binary, $date, $date_time, $password)
+> testEndpointParameters($number, $double, $pattern_without_delimiter, $byte, $integer, $int32, $int64, $float, $string, $binary, $date, $date_time, $password, $callback)
 
 Fake endpoint for testing various parameters 假端點 偽のエンドポイント 가짜 엔드 포인트
 
@@ -68,7 +70,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 Swagger\Client\Configuration::getDefaultConfiguration()->setUsername('YOUR_USERNAME');
 Swagger\Client\Configuration::getDefaultConfiguration()->setPassword('YOUR_PASSWORD');
 
-$api_instance = new Swagger\Client\Api\FakeApi();
+$api_instance = new Swagger\Client\Api\FakeApi(new \Http\Adapter\Guzzle6\Client());
 $number = 3.4; // float | None
 $double = 1.2; // double | None
 $pattern_without_delimiter = "pattern_without_delimiter_example"; // string | None
@@ -82,9 +84,10 @@ $binary = "B"; // string | None
 $date = new \DateTime(); // \DateTime | None
 $date_time = new \DateTime(); // \DateTime | None
 $password = "password_example"; // string | None
+$callback = "callback_example"; // string | None
 
 try {
-    $api_instance->testEndpointParameters($number, $double, $pattern_without_delimiter, $byte, $integer, $int32, $int64, $float, $string, $binary, $date, $date_time, $password);
+    $api_instance->testEndpointParameters($number, $double, $pattern_without_delimiter, $byte, $integer, $int32, $int64, $float, $string, $binary, $date, $date_time, $password, $callback);
 } catch (Exception $e) {
     echo 'Exception when calling FakeApi->testEndpointParameters: ', $e->getMessage(), PHP_EOL;
 }
@@ -108,6 +111,7 @@ Name | Type | Description  | Notes
  **date** | **\DateTime**| None | [optional]
  **date_time** | **\DateTime**| None | [optional]
  **password** | **string**| None | [optional]
+ **callback** | **string**| None | [optional]
 
 ### Return type
 
@@ -129,19 +133,21 @@ void (empty response body)
 
 To test enum parameters
 
+To test enum parameters
+
 ### Example
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\FakeApi();
+$api_instance = new Swagger\Client\Api\FakeApi(new \Http\Adapter\Guzzle6\Client());
 $enum_form_string_array = array("enum_form_string_array_example"); // string[] | Form parameter enum test (string array)
 $enum_form_string = "-efg"; // string | Form parameter enum test (string)
 $enum_header_string_array = array("enum_header_string_array_example"); // string[] | Header parameter enum test (string array)
 $enum_header_string = "-efg"; // string | Header parameter enum test (string)
 $enum_query_string_array = array("enum_query_string_array_example"); // string[] | Query parameter enum test (string array)
 $enum_query_string = "-efg"; // string | Query parameter enum test (string)
-$enum_query_integer = 3.4; // float | Query parameter enum test (double)
+$enum_query_integer = 56; // int | Query parameter enum test (double)
 $enum_query_double = 1.2; // double | Query parameter enum test (double)
 
 try {
@@ -162,7 +168,7 @@ Name | Type | Description  | Notes
  **enum_header_string** | **string**| Header parameter enum test (string) | [optional] [default to -efg]
  **enum_query_string_array** | [**string[]**](../Model/string.md)| Query parameter enum test (string array) | [optional]
  **enum_query_string** | **string**| Query parameter enum test (string) | [optional] [default to -efg]
- **enum_query_integer** | **float**| Query parameter enum test (double) | [optional]
+ **enum_query_integer** | **int**| Query parameter enum test (double) | [optional]
  **enum_query_double** | **double**| Query parameter enum test (double) | [optional]
 
 ### Return type
@@ -175,8 +181,8 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Content-Type**: */*
+ - **Accept**: */*
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
