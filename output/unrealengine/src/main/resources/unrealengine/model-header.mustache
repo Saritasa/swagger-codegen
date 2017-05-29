@@ -5,14 +5,11 @@
  * {{description}}
  */
 
-#ifndef {{classname}}_H_
-#define {{classname}}_H_
+#pragma once
 
 {{{defaultInclude}}}
-#include "ModelBase.h"
-
-{{#imports}}{{{this}}}
-{{/imports}}
+#include "SerializeableModelBase.h"
+#include "JsonSerializingContext.h"
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}} {
@@ -21,50 +18,28 @@ namespace {{this}} {
 /// <summary>
 /// {{description}}
 /// </summary>
-class {{declspec}} {{classname}}
-    : public ModelBase
+class {{classname}}
+    : public SerializeableModelBase
 {
 public:
     {{classname}}();
     virtual ~{{classname}}();
 
-    /////////////////////////////////////////////
-    /// ModelBase overrides
-
-    void validate() override;
-
-    web::json::value toJson() const override;
-    void fromJson(web::json::value& json) override;
-
-    void toMultipart(std::shared_ptr<MultipartFormData> multipart, const utility::string_t& namePrefix) const override;
-    void fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const utility::string_t& namePrefix) override;
-
-    /////////////////////////////////////////////
-    /// {{classname}} members
-
     {{#vars}}
     /// <summary>
     /// {{description}}
     /// </summary>
-    {{^isNotContainer}}{{{datatype}}}& {{getter}}();
-    {{/isNotContainer}}{{#isNotContainer}}{{{datatype}}} {{getter}}() const;
-    void {{setter}}({{{datatype}}} value);
-    {{/isNotContainer}}{{^required}}bool {{baseName}}IsSet() const;
-    void unset{{name}}();
-    {{/required}}
+    {{{datatype}}} {{name}};
     {{/vars}}
 
-protected:
-    {{#vars}}{{{datatype}}} m_{{name}};
-    {{^required}}bool m_{{name}}IsSet;
-    {{/required}}
-    {{/vars}}
+    virtual void FromJsonObject(TSharedPtr<FJsonObject> JsonObject) override;
+    virtual TSharedRef<FJsonObject> ToJsonObject(const Trivver::JsonSerializingContext& Context) const override;
+    virtual FString GetModelName() const override;
 };
 
 {{#modelNamespaceDeclarations}}
 }
 {{/modelNamespaceDeclarations}}
 
-#endif /* {{classname}}_H_ */
 {{/model}}
 {{/models}}

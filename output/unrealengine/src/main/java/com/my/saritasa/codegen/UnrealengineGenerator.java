@@ -13,6 +13,7 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
     // source folder where to write the files
     protected String sourceFolder = "src";
     protected String apiVersion = "1.0.0";
+    protected String defaultInclude = "";
 
     /**
      * Configures the type of generator.
@@ -47,6 +48,11 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
     public UnrealengineGenerator() {
         super();
 
+        /**
+         * Model Package.  Optional, if needed, this can be used in templates
+         */
+        modelPackage = "io.swagger.client.model";
+
         // set the output folder here
         outputFolder = "generated-code/unrealengine";
 
@@ -56,18 +62,17 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
          * for multiple files for model, just put another entry in the `modelTemplateFiles` with
          * a different extension
          */
-        modelTemplateFiles.put(
-                "model.mustache", // the template to use
-                ".sample");       // the extension for each file to write
+        modelTemplateFiles.put("model-header.mustache", ".h");
+        modelTemplateFiles.put("model-source.mustache", ".cpp");
 
-        /**
-         * Api classes.  You can write classes for each Api file with the apiTemplateFiles map.
-         * as with models, add multiple entries with different extensions for multiple files per
-         * class
-         */
-        apiTemplateFiles.put(
-                "api.mustache",   // the template to use
-                ".sample");       // the extension for each file to write
+        cliOptions.clear();
+
+        // CLI options
+        addOption(CodegenConstants.MODEL_PACKAGE, "C++ namespace for models (convention: name.space.model).",
+                this.modelPackage);
+        addOption(DEFAULT_INCLUDE,
+                "The default include statement that should be placed in all headers for including things like the declspec (convention: #include \"Commons.h\" ",
+                this.defaultInclude);
 
         /**
          * Template Location.  This is the location which templates will be read from.  The generator
@@ -75,23 +80,34 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
          */
         templateDir = "unrealengine";
 
-        /**
-         * Api Package.  Optional, if needed, this can be used in templates
-         */
-        apiPackage = "io.swagger.client.api";
+        languageSpecificPrimitives = new HashSet<String>(
+                Arrays.asList("int", "char", "bool", "long", "float", "double", "int32", "int64"));
 
-        /**
-         * Model Package.  Optional, if needed, this can be used in templates
-         */
-        modelPackage = "io.swagger.client.model";
+        typeMapping = new HashMap<String, String>();
+        typeMapping.put("date", "FDateTime");
+        typeMapping.put("DateTime", "FDateTime");
+        typeMapping.put("string", "FString");
+        typeMapping.put("integer", "int32");
+        typeMapping.put("long", "_notsupported_"); // @@
+        typeMapping.put("boolean", "bool");
+        typeMapping.put("array", "TArray");
+        typeMapping.put("map", "_notsupported_"); // @@
+        typeMapping.put("file", "FString");
+        typeMapping.put("object", "void*"); // @@
+        typeMapping.put("binary", "FString");
+        typeMapping.put("number", "double");
+        typeMapping.put("float", "double");
 
         /**
          * Reserved words.  Override this with reserved words specific to your language
          */
         reservedWords = new HashSet<String> (
                 Arrays.asList(
-                        "sample1",  // replace with static values
-                        "sample2")
+                        "FString",
+                        "FDateTime",
+                        "TArray",
+                        "TMap")
+                // @@ to be contunued
         );
 
         /**
@@ -99,26 +115,64 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
          * are available in models, apis, and supporting files
          */
         additionalProperties.put("apiVersion", apiVersion);
+    }
 
-        /**
-         * Supporting Files.  You can write single files for the generator with the
-         * entire object tree available.  If the input file has a suffix of `.mustache
-         * it will be processed by the template engine.  Otherwise, it will be copied
-         */
-        supportingFiles.add(new SupportingFile("myFile.mustache",   // the input template or file
-                "",                                                       // the destination folder, relative `outputFolder`
-                "myFile.sample")                                          // the output file
-        );
+    @Override
+    public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
 
-        /**
-         * Language Specific Primitives.  These types will not trigger imports by
-         * the client generator
-         */
-        languageSpecificPrimitives = new HashSet<String>(
-                Arrays.asList(
-                        "Type1",      // replace these with your types
-                        "Type2")
-        );
+        // Index all CodegenModels by model name.
+        Map<String, CodegenModel> allModels = new HashMap<String, CodegenModel>();
+        for (Map.Entry<String, Object> entry : objs.entrySet()) {
+            String modelName = toModelName(entry.getKey());
+            Map<String, Object> inner = (Map<String, Object>) entry.getValue();
+            List<Map<String, Object>> models = (List<Map<String, Object>>) inner.get("models");
+            for (Map<String, Object> mo : models) {
+                CodegenModel cm = (CodegenModel) mo.get("model");
+                allModels.put(modelName, cm);
+            }
+        }
+
+        // It is not possible to set additional parameters when use json $ref
+        // Details: https://github.com/OAI/OpenAPI-Specification/issues/241
+        // Take vendorExtensions from referenced model
+        for (CodegenModel cm : allModels.values()) {
+            if (cm.vars == null)
+                continue;
+            for (CodegenProperty cp : cm.vars) {
+                if (cp.isPrimitiveType)
+                    continue;
+
+                CodegenModel refModel = allModels.get(cp.datatype);
+                if (refModel != null) {
+                    Map<String, Object> tmp = new HashMap<String, Object>();
+                    tmp.putAll(refModel.vendorExtensions);
+                    // rewrite per model extensions by per property extensions
+                    tmp.putAll(cp.vendorExtensions);
+                    cp.vendorExtensions.putAll(tmp);
+                }
+            }
+        }
+        return objs;
+    }
+
+    protected void addOption(String key, String description, String defaultValue) {
+        CliOption option = new CliOption(key, description);
+        if (defaultValue != null)
+            option.defaultValue(defaultValue);
+        cliOptions.add(option);
+    }
+
+    @Override
+    public void processOpts() {
+        super.processOpts();
+
+        if (additionalProperties.containsKey(DEFAULT_INCLUDE)) {
+            defaultInclude = additionalProperties.get(DEFAULT_INCLUDE).toString();
+        }
+
+        additionalProperties.put("modelNamespaceDeclarations", modelPackage.split("\\."));
+        additionalProperties.put("modelNamespace", modelPackage.replaceAll("\\.", "::"));
+        additionalProperties.put("defaultInclude", defaultInclude);
     }
 
     /**
@@ -140,6 +194,28 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         return outputFolder + "/" + sourceFolder + "/" + modelPackage().replace('.', File.separatorChar);
     }
 
+    @Override
+    public String toVarName(String name) {
+        // replace - with _ e.g. created-at => created_at
+        name = name.replaceAll("-", "_"); // FIXME: a parameter should not be assigned. Also declare the methods parameters as 'final'.
+
+        // if it's all uppper case, do nothing
+        if (name.matches("^[A-Z_]*$")) {
+            return name;
+        }
+
+        // camelize the variable name
+        // pet_id => PetId
+        name = camelize(name);
+
+        // for reserved word or word starting with number, append _
+        if (isReservedWord(name) || name.matches("^\\d.*")) {
+            name = escapeReservedWord(name);
+        }
+
+        return name;
+    }
+
     /**
      * Location to write api files.  You can use the apiPackage() as defined when the class is
      * instantiated
@@ -157,17 +233,76 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
      */
     @Override
     public String getTypeDeclaration(Property p) {
-        if(p instanceof ArrayProperty) {
+        String swaggerType = getSwaggerType(p);
+        if (p instanceof ArrayProperty) {
             ArrayProperty ap = (ArrayProperty) p;
             Property inner = ap.getItems();
-            return getSwaggerType(p) + "[" + getTypeDeclaration(inner) + "]";
-        }
-        else if (p instanceof MapProperty) {
+            return swaggerType + "<" + getTypeDeclaration(inner) + ">";
+        } else if (p instanceof MapProperty) {
             MapProperty mp = (MapProperty) p;
             Property inner = mp.getAdditionalProperties();
-            return getSwaggerType(p) + "[String, " + getTypeDeclaration(inner) + "]";
+
+            return swaggerType + "<FString, " + getTypeDeclaration(inner) + ">";
+        } else if (!p.getRequired()) {
+            return getNullableTypeFor(p);
         }
         return super.getTypeDeclaration(p);
+    }
+
+    private String getNullableTypeFor(Property p) {
+        return "TOptional<" + super.getTypeDeclaration(p) + ">";
+    }
+
+    @Override
+    public String toDefaultValue(Property p) {
+        if (p instanceof StringProperty) {
+            StringProperty dp = (StringProperty) p;
+            if (dp.getDefault() != null) {
+                String _default = dp.getDefault();
+                if (dp.getEnum() == null) {
+                    return "\"" + _default + "\"";
+                } else {
+                    // convert to enum var name later in postProcessModels
+                    return _default;
+                }
+            }
+        } else if (p instanceof BooleanProperty) {
+            BooleanProperty dp = (BooleanProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            } else {
+                return "false";
+            }
+        } else if (p instanceof DoubleProperty) {
+            DoubleProperty dp = (DoubleProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            } else {
+                return "0.0";
+            }
+        } else if (p instanceof FloatProperty) {
+            FloatProperty dp = (FloatProperty) p;
+            if (dp.getDefault() != null) {
+                return String.format("%1$sF", dp.getDefault());
+            } else {
+                return "0.0f";
+            }
+        } else if (p instanceof IntegerProperty) {
+            IntegerProperty dp = (IntegerProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            } else {
+                return "0";
+            }
+        } else if (p instanceof LongProperty) {
+            LongProperty dp = (LongProperty) p;
+            if (dp.getDefault() != null) {
+                return dp.getDefault().toString();
+            } else {
+                return "0";
+            }
+        }
+        return null;
     }
 
     /**
@@ -181,13 +316,14 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
     public String getSwaggerType(Property p) {
         String swaggerType = super.getSwaggerType(p);
         String type = null;
-        if(typeMapping.containsKey(swaggerType)) {
-            type = typeMapping.get(swaggerType);
-            if(languageSpecificPrimitives.contains(type))
-                return toModelName(type);
-        }
-        else
+        if (typeMapping.containsKey(swaggerType.toLowerCase())) {
+            type = typeMapping.get(swaggerType.toLowerCase());
+            if (languageSpecificPrimitives.contains(type)) {
+                return type;
+            }
+        } else {
             type = swaggerType;
+        }
         return toModelName(type);
     }
 }
