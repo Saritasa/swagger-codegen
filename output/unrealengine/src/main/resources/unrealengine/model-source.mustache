@@ -1,50 +1,84 @@
 {{>licenseInfo}}
 {{#models}}{{#model}}
 
+{{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
 #include "{{classname}}.h"
+#include "JsonSerializer.h"
 
 {{#modelNamespaceDeclarations}}
-namespace {{this}} {
+namespace {{this}}
+{
 {{/modelNamespaceDeclarations}}
 
-{{classname}}::{{classname}}()
-{
-    {{#vars}}
-    {{#required}}
-    {{#defaultValue}}
-    {{name}} = {{{defaultValue}}};
-    {{/defaultValue}}
-    {{/required}}
-    {{/vars}}
-}
+	using namespace Utils;
 
-{{classname}}::~{{classname}}()
-{
-}
-
-void {{classname}}::FromJsonObject(TSharedPtr<FJsonObject> JsonObject)
-{
-        JsonSerializer serializer;
-        {{#vars}}
-        serializer.GetJsonFieldAsArgumentType(JsonObject, "{{baseName}}", {{name}});
-        {{/vars}}
-}
-
-TSharedRef<FJsonObject> {{classname}}::ToJsonObject(const Trivver::JsonSerializingContext& Context) const
-{
-        auto ret = MakeShared<FJsonObject>();
-		JsonSerializer serializer(Context);
+	{{classname}}::{{classname}}()
+	{
 		{{#vars}}
-		serializer.SetJsonField(ret, "{{baseName}}", {{name}});
+		{{#required}}
+		{{#defaultValue}}
+		{{name}} = {{{defaultValue}}};
+		{{/defaultValue}}
+		{{/required}}
+		{{/vars}}
+	}
+
+	{{classname}}::~{{classname}}()
+	{
+	}
+
+#ifdef UE_BUILD_DEBUG
+	template <class TType>
+	void LogReadExampleError(const FString& FieldName, TType ExampleValue)
+	{
+		FString exampleValue(Lex::ToString(ExampleValue));
+		UE_LOG(LogTemp, Warning, TEXT("Unable to read example value (=%s) for field: %s"), *exampleValue, *FieldName);
+	}
+
+	{{classname}} {{classname}}::Example()
+	{
+		{{classname}} ret;
+		JsonSerializer serializer;
+
+		{{#vars}}
+		{{#isNotContainer}}
+		{{#example}}
+		{
+			FString exampleValue = "{{{example}}}";
+			if (!serializer.TryGetJsonValue(MakeShared<FJsonValueString>(exampleValue), ret.{{name}}))
+			{
+				LogReadExampleError(TEXT("{{name}}"), exampleValue);
+			}
+		}
+		{{/example}}
+		{{/isNotContainer}}
 		{{/vars}}
 		return ret;
-}
+	}
+#endif
 
-FString {{classname}}::GetModelName() const
-{
-    return TEXT("{{classname}}");
-}
+	void {{classname}}::FromJsonObject(TSharedPtr<FJsonObject> JsonObject)
+	{
+		JsonSerializer serializer;
+		{{#vars}}
+		serializer.GetJsonFieldAsArgumentType(JsonObject, "{{baseName}}", {{name}});
+		{{/vars}}
+	}
 
+	TSharedRef<FJsonObject> {{classname}}::ToJsonObject() const
+	{
+		auto ret = MakeShared<FJsonObject>();
+		JsonSerializer serializer;
+		{{#vars}}
+		serializer.SetJsonField(ret, "{{baseName}}", {{name}} {{^vendorExtensions.x-nullable}}{{#required}}, SerializeEmptyFieldBehaviour::Skip{{/required}}{{/vendorExtensions.x-nullable}});
+		{{/vars}}
+		return ret;
+	}
+
+	FString {{classname}}::GetModelName() const
+	{
+		return TEXT("{{classname}}");
+	}
 {{#modelNamespaceDeclarations}}
 }
 {{/modelNamespaceDeclarations}}

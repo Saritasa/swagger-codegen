@@ -2,7 +2,7 @@ package com.my.saritasa.codegen;
 
 import io.swagger.codegen.*;
 import io.swagger.models.properties.*;
-
+import io.swagger.models.Model;
 import java.util.*;
 import java.io.File;
 
@@ -11,7 +11,6 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
     public static final String DEFAULT_INCLUDE = "defaultInclude";
 
     // source folder where to write the files
-    protected String sourceFolder = "src";
     protected String apiVersion = "1.0.0";
     protected String defaultInclude = "";
 
@@ -54,7 +53,7 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         modelPackage = "io.swagger.client.model";
 
         // set the output folder here
-        outputFolder = "generated-code/unrealengine";
+        outputFolder = "api";
 
         /**
          * Models.  You can write model files using the modelTemplateFiles map.
@@ -88,12 +87,15 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         typeMapping.put("DateTime", "FDateTime");
         typeMapping.put("string", "FString");
         typeMapping.put("integer", "int32");
-        typeMapping.put("long", "_notsupported_"); // @@
+        // JSON does not actually support int64 as well as JavaScript.
+        // There is not much sense to send int64 via API since some clients can't handle them
+        typeMapping.put("long", "double");
         typeMapping.put("boolean", "bool");
         typeMapping.put("array", "TArray");
         typeMapping.put("map", "_notsupported_"); // @@
         typeMapping.put("file", "FString");
-        typeMapping.put("object", "void*"); // @@
+        // Use void* object is not defined
+        typeMapping.put("object", "void*");
         typeMapping.put("binary", "FString");
         typeMapping.put("number", "double");
         typeMapping.put("float", "double");
@@ -115,6 +117,12 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
          * are available in models, apis, and supporting files
          */
         additionalProperties.put("apiVersion", apiVersion);
+
+        super.importMapping = new HashMap<String, String>();
+        importMapping.put("FString", "");
+        importMapping.put("TArray", "");
+        importMapping.put("TDateTime", "");
+        importMapping.put("TOptional", "");
     }
 
     @Override
@@ -191,7 +199,32 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
      * instantiated
      */
     public String modelFileFolder() {
-        return outputFolder + "/" + sourceFolder + "/" + modelPackage().replace('.', File.separatorChar);
+        return outputFolder + "/" + modelPackage().replace('.', File.separatorChar);
+    }
+
+    @Override
+    public String toModelImport(String name) {
+        if (importMapping.containsKey(name)) {
+            return importMapping.get(name);
+        } else {
+            return "#include \"" + name + ".h\"";
+        }
+    }
+
+    @Override
+    public CodegenModel fromModel(String name, Model model, Map<String, Model> allDefinitions) {
+        CodegenModel codegenModel = super.fromModel(name, model, allDefinitions);
+
+        Set<String> oldImports = codegenModel.imports;
+        codegenModel.imports = new HashSet<String>();
+        for (String imp : oldImports) {
+            String newImp = toModelImport(imp);
+            if (!newImp.isEmpty()) {
+                codegenModel.imports.add(newImp);
+            }
+        }
+
+        return codegenModel;
     }
 
     @Override
@@ -214,15 +247,6 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         }
 
         return name;
-    }
-
-    /**
-     * Location to write api files.  You can use the apiPackage() as defined when the class is
-     * instantiated
-     */
-    @Override
-    public String apiFileFolder() {
-        return outputFolder + "/" + sourceFolder + "/" + apiPackage().replace('.', File.separatorChar);
     }
 
     /**

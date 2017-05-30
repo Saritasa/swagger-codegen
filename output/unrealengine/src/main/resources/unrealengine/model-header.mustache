@@ -1,41 +1,43 @@
 {{>licenseInfo}}
-{{#models}}{{#model}}/*
- * {{classname}}.h
- *
- * {{description}}
- */
-
+{{#models}}{{#model}}
 #pragma once
 
-{{{defaultInclude}}}
 #include "SerializeableModelBase.h"
-#include "JsonSerializingContext.h"
+{{#imports}}
+{{#this}}{{{this}}}{{/this}}
+{{/imports}}
 
 {{#modelNamespaceDeclarations}}
-namespace {{this}} {
-{{/modelNamespaceDeclarations}}
-
-/// <summary>
-/// {{description}}
-/// </summary>
-class {{classname}}
-    : public SerializeableModelBase
+namespace {{this}}
 {
-public:
-    {{classname}}();
-    virtual ~{{classname}}();
+{{/modelNamespaceDeclarations}}
+	/// <summary>
+	/// {{description}}
+	/// </summary>
+	class {{classname}} : public Utils::SerializeableModelBase
+	{
+	public:
+		{{classname}}();
+		virtual ~{{classname}}();
 
-    {{#vars}}
-    /// <summary>
-    /// {{description}}
-    /// </summary>
-    {{{datatype}}} {{name}};
-    {{/vars}}
+#ifdef UE_BUILD_DEBUG
+		{{classname}} Example();
+#endif
 
-    virtual void FromJsonObject(TSharedPtr<FJsonObject> JsonObject) override;
-    virtual TSharedRef<FJsonObject> ToJsonObject(const Trivver::JsonSerializingContext& Context) const override;
-    virtual FString GetModelName() const override;
-};
+		{{#vars}}
+		/// <summary>
+		/// {{description}}
+		/// </summary>
+		{{{datatype}}} {{name}};
+
+		{{/vars}}
+
+		virtual void FromJsonObject(TSharedPtr<FJsonObject> JsonObject) override;
+
+		virtual TSharedRef<FJsonObject> ToJsonObject() const override;
+
+		virtual FString GetModelName() const override;
+	};
 
 {{#modelNamespaceDeclarations}}
 }
