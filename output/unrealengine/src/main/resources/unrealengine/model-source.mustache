@@ -27,36 +27,6 @@ namespace {{this}}
 	{
 	}
 
-#ifdef UE_BUILD_DEBUG
-	template <class TType>
-	void LogReadExampleError(const FString& FieldName, TType ExampleValue)
-	{
-		FString exampleValue(Lex::ToString(ExampleValue));
-		UE_LOG(LogTemp, Warning, TEXT("Unable to read example value (=%s) for field: %s"), *exampleValue, *FieldName);
-	}
-
-	{{classname}} {{classname}}::Example()
-	{
-		{{classname}} ret;
-		JsonSerializer serializer;
-
-		{{#vars}}
-		{{#isNotContainer}}
-		{{#example}}
-		{
-			FString exampleValue = "{{{example}}}";
-			if (!serializer.TryGetJsonValue(MakeShared<FJsonValueString>(exampleValue), ret.{{name}}))
-			{
-				LogReadExampleError(TEXT("{{name}}"), exampleValue);
-			}
-		}
-		{{/example}}
-		{{/isNotContainer}}
-		{{/vars}}
-		return ret;
-	}
-#endif
-
 	void {{classname}}::FromJsonObject(TSharedPtr<FJsonObject> JsonObject)
 	{
 		JsonSerializer serializer;
@@ -78,6 +48,19 @@ namespace {{this}}
 	FString {{classname}}::GetModelName() const
 	{
 		return TEXT("{{classname}}");
+	}
+
+	bool operator==(const {{classname}}& left, const {{classname}}& right)
+	{
+		return
+		{{#vars}}
+			left.{{name}} == right.{{name}}{{#hasMore}} &&{{/hasMore}}{{^hasMore}};{{/hasMore}}
+		{{/vars}}
+	}
+
+	bool operator!=(const {{classname}}& left, const {{classname}}& right)
+	{
+		return !(left == right);
 	}
 {{#modelNamespaceDeclarations}}
 }

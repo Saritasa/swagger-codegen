@@ -64,6 +64,9 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         modelTemplateFiles.put("model-header.mustache", ".h");
         modelTemplateFiles.put("model-source.mustache", ".cpp");
 
+        modelTestTemplateFiles.put("model-test-header.mustache", ".h");
+        modelTestTemplateFiles.put("model-test-source.mustache", ".cpp");
+
         cliOptions.clear();
 
         // CLI options
@@ -200,6 +203,11 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
      */
     public String modelFileFolder() {
         return outputFolder + "/" + modelPackage().replace('.', File.separatorChar);
+    }
+
+    public String modelTestFileFolder()
+    {
+        return outputFolder + "/" + modelPackage().replace('.', File.separatorChar) + "/Tests";
     }
 
     @Override

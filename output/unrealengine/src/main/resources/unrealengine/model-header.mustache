@@ -20,10 +20,6 @@ namespace {{this}}
 		{{classname}}();
 		virtual ~{{classname}}();
 
-#ifdef UE_BUILD_DEBUG
-		{{classname}} Example();
-#endif
-
 		{{#vars}}
 		/// <summary>
 		/// {{description}}
@@ -39,6 +35,8 @@ namespace {{this}}
 		virtual FString GetModelName() const override;
 	};
 
+	bool operator==(const {{classname}}& left, const {{classname}}& right);
+	bool operator!=(const {{classname}}& left, const {{classname}}& right);
 {{#modelNamespaceDeclarations}}
 }
 {{/modelNamespaceDeclarations}}

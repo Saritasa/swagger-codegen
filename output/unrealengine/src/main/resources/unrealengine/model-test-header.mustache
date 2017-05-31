@@ -1,0 +1,28 @@
+{{>licenseInfo}}
+{{#models}}{{#model}}
+#pragma once
+
+{{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
+#include "{{classname}}.h"
+
+{{#modelNamespaceDeclarations}}
+namespace {{this}}
+{
+{{/modelNamespaceDeclarations}}
+	/// <summary>
+	/// {{description}}
+	/// </summary>
+	class {{classname}}Test
+	{
+	public:
+		{{classname}}Test();
+		virtual ~{{classname}}Test();
+
+		virtual {{classname}} Example();
+	};
+{{#modelNamespaceDeclarations}}
+}
+{{/modelNamespaceDeclarations}}
+
+{{/model}}
+{{/models}}
