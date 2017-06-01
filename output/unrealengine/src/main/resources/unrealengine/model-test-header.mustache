@@ -4,22 +4,30 @@
 
 {{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
 #include "{{classname}}.h"
-#include "SerializeableModelTestBase.h"
+#include "JsonTestUtils.h"
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}}
 {
 {{/modelNamespaceDeclarations}}
-	/// <summary>
-	/// {{description}}
-	/// </summary>
-	class {{classname}}Test : public Utils::SerializeableModelTestBase
+	template<bool RewriteFlag>
+	struct Test<{{classname}}, RewriteFlag>
 	{
-	public:
-		{{classname}}Test();
-		virtual ~{{classname}}Test();
+		static {{classname}} Example()
+		{
+			using namespace Utils;
 
-		virtual {{classname}} Example();
+			{{classname}} ret;
+			Utils::JsonSerializer serializer;
+			{{#vars}}
+			{{#isNotContainer}}
+			{{#example}}
+			JsonTestUtils::FillFieldWithExampleValue(serializer, TEXT("{{{example}}}"), TEXT("{{name}}"), ret.{{name}});
+			{{/example}}
+			{{/isNotContainer}}
+			{{/vars}}
+			return ret;
+		}
 	};
 {{#modelNamespaceDeclarations}}
 }

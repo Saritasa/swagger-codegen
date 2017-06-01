@@ -64,8 +64,7 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         modelTemplateFiles.put("model-header.mustache", ".h");
         modelTemplateFiles.put("model-source.mustache", ".cpp");
 
-        modelTestTemplateFiles.put("model-test-header.mustache", ".h");
-        modelTestTemplateFiles.put("model-test-source.mustache", ".cpp");
+        modelTestTemplateFiles.put("model-test-header.mustache", ".hpp");
 
         cliOptions.clear();
 
@@ -298,6 +297,10 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
                     return _default;
                 }
             }
+        } else if (p instanceof DateProperty) {
+            return "FDateTime(0)";
+        } else if (p instanceof DateTimeProperty) {
+            return "FDateTime(0)";
         } else if (p instanceof BooleanProperty) {
             BooleanProperty dp = (BooleanProperty) p;
             if (dp.getDefault() != null) {
@@ -312,6 +315,8 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
             } else {
                 return "0.0";
             }
+        } else if (p instanceof DecimalProperty) {
+            return "0.0";
         } else if (p instanceof FloatProperty) {
             FloatProperty dp = (FloatProperty) p;
             if (dp.getDefault() != null) {
@@ -326,6 +331,8 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
             } else {
                 return "0";
             }
+        } else if (p instanceof BaseIntegerProperty) {
+                return "0";
         } else if (p instanceof LongProperty) {
             LongProperty dp = (LongProperty) p;
             if (dp.getDefault() != null) {
