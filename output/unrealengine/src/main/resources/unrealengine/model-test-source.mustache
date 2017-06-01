@@ -12,12 +12,11 @@ namespace {{this}}
 
 	using namespace Utils;
 
-	template <class TType>
-	void LogReadExampleError(const FString& FieldName, TType ExampleValue)
-	{
-		FString exampleValue(Lex::ToString(ExampleValue));
-		UE_LOG(LogTemp, Warning, TEXT("Unable to read example value (=%s) for field: %s"), *exampleValue, *FieldName);
-	}
+	{{classname}}Test::{{classname}}Test()
+	{}
+
+	{{classname}}Test::~{{classname}}Test()
+	{}
 
 	{{classname}} {{classname}}Test::Example()
 	{

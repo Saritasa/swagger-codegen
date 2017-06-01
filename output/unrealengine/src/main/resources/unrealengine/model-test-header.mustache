@@ -4,6 +4,7 @@
 
 {{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
 #include "{{classname}}.h"
+#include "SerializeableModelTestBase.h"
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}}
@@ -12,7 +13,7 @@ namespace {{this}}
 	/// <summary>
 	/// {{description}}
 	/// </summary>
-	class {{classname}}Test
+	class {{classname}}Test : public Utils::SerializeableModelTestBase
 	{
 	public:
 		{{classname}}Test();
