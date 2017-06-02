@@ -6,32 +6,28 @@
 #include "{{classname}}.h"
 #include "JsonTestUtils.h"
 
-{{#modelNamespaceDeclarations}}
-namespace {{this}}
+namespace Utils
 {
-{{/modelNamespaceDeclarations}}
 	template<bool RewriteFlag>
-	struct Test<{{classname}}, RewriteFlag>
+	struct Example<{{#modelNamespaceDeclarations}}{{this}}::{{/modelNamespaceDeclarations}}{{classname}}, RewriteFlag>
 	{
-		static {{classname}} Example()
+		static {{#modelNamespaceDeclarations}}{{this}}::{{/modelNamespaceDeclarations}}{{classname}} Get(Utils::JsonSerializer& Serializer)
 		{
-			using namespace Utils;
-
-			{{classname}} ret;
-			Utils::JsonSerializer serializer;
+			{{#modelNamespaceDeclarations}}{{this}}::{{/modelNamespaceDeclarations}}{{classname}} ret;
 			{{#vars}}
 			{{#isNotContainer}}
 			{{#example}}
-			JsonTestUtils::FillFieldWithExampleValue(serializer, TEXT("{{{example}}}"), TEXT("{{name}}"), ret.{{name}});
+			JsonTestUtils::FillFieldWithExampleValue(Serializer, TEXT("{{{example}}}"), TEXT("{{name}}"), ret.{{name}});
+			{{/example}}
+			{{^example}}
+			JsonTestUtils::FillFieldWithExampleValue(Serializer, TEXT("{{name}}"), ret.{{name}});
 			{{/example}}
 			{{/isNotContainer}}
 			{{/vars}}
 			return ret;
 		}
 	};
-{{#modelNamespaceDeclarations}}
 }
-{{/modelNamespaceDeclarations}}
 
 {{/model}}
 {{/models}}
