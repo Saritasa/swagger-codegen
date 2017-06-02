@@ -98,10 +98,9 @@ class FakeApi(object):
 
         collection_formats = {}
 
-        resource_path = '/fake'.replace('{format}', 'json')
         path_params = {}
 
-        query_params = {}
+        query_params = []
 
         header_params = {}
 
@@ -122,7 +121,7 @@ class FakeApi(object):
         # Authentication setting
         auth_settings = []
 
-        return self.api_client.call_api(resource_path, 'PUT',
+        return self.api_client.call_api('/fake', 'PUT',
                                         path_params,
                                         query_params,
                                         header_params,
