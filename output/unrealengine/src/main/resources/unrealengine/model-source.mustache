@@ -42,7 +42,7 @@ namespace {{this}}
 		auto ret = MakeShared<FJsonObject>();
 		JsonSerializer serializer;
 		{{#vars}}
-		serializer.SetJsonField(ret, "{{baseName}}", {{name}} {{^vendorExtensions.x-nullable}}{{#required}}, SerializeEmptyFieldBehaviour::Skip{{/required}}{{/vendorExtensions.x-nullable}});
+		serializer.SetJsonField(ret, "{{baseName}}", {{name}}{{^vendorExtensions.x-nullable}}{{^required}}, SerializeEmptyFieldBehaviour::Skip{{/required}}{{/vendorExtensions.x-nullable}});
 		{{/vars}}
 		return ret;
 	}
