@@ -68,9 +68,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                     }
                     self.processRequest(request: upload, managerId, completion)
                 case .failure(let encodingError):
-                    let error = ErrorResponse.Error(415, nil, encodingError)
-                    self.processError(error)
-                    completion(nil, error)
+                    completion(nil, ErrorResponse.Error(415, nil, encodingError))
                 }
             })
         } else {
@@ -100,9 +98,10 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if stringResponse.result.isFailure {
-                    let error = ErrorResponse.Error(stringResponse.response?.statusCode ?? 500, stringResponse.data, stringResponse.result.error as Error!)
-                    self.processError(error)
-                    completion(nil, error)
+                    completion(
+                        nil,
+                        ErrorResponse.Error(stringResponse.response?.statusCode ?? 500, stringResponse.data, stringResponse.result.error as Error!)
+                    )
                     return
                 }
 
@@ -119,9 +118,10 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if voidResponse.result.isFailure {
-                    let error = ErrorResponse.Error(voidResponse.response?.statusCode ?? 500, voidResponse.data, voidResponse.result.error!)
-                    self.processError(error)
-                    completion(nil, error)
+                    completion(
+                        nil,
+                        ErrorResponse.Error(voidResponse.response?.statusCode ?? 500, voidResponse.data, voidResponse.result.error!)
+                    )
                     return
                 }
 
@@ -137,9 +137,10 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if (dataResponse.result.isFailure) {
-                    let error = ErrorResponse.Error(dataResponse.response?.statusCode ?? 500, dataResponse.data, dataResponse.result.error!)
-                    self.processError(error)
-                    completion(nil, error)
+                    completion(
+                        nil,
+                        ErrorResponse.Error(dataResponse.response?.statusCode ?? 500, dataResponse.data, dataResponse.result.error!)
+                    )
                     return
                 }
 
@@ -156,9 +157,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if response.result.isFailure {
-                    let error = ErrorResponse.Error(response.response?.statusCode ?? 500, response.data, response.result.error!)
-                    self.processError(error)
-                    completion(nil, error)
+                    completion(nil, ErrorResponse.Error(response.response?.statusCode ?? 500, response.data, response.result.error!))
                     return
                 }
 
@@ -184,14 +183,10 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                     return
                 }
 
-                let error = ErrorResponse.Error(500, nil, NSError(domain: "localhost", code: 500, userInfo: ["reason": "unreacheable code"]))
-                self.processError(error)
-                completion(nil, error)
+                completion(nil, ErrorResponse.Error(500, nil, NSError(domain: "localhost", code: 500, userInfo: ["reason": "unreacheable code"])))
             }
         }
     }
-
-    open func processError(_ error: ErrorResponse) {}
 
     open func buildHeaders() -> [String: String] {
         var httpHeaders = SessionManager.defaultHTTPHeaders
