@@ -68,7 +68,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                     }
                     self.processRequest(request: upload, managerId, completion)
                 case .failure(let encodingError):
-                    completion(nil, ErrorResponse.Error(415, nil, encodingError))
+                    let error = ErrorResponse.Error(415, nil, encodingError)
+                    self.processError(error, completion)
+                    completion(nil, error)
                 }
             })
         } else {
@@ -98,10 +100,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if stringResponse.result.isFailure {
-                    completion(
-                        nil,
-                        ErrorResponse.Error(stringResponse.response?.statusCode ?? 500, stringResponse.data, stringResponse.result.error as Error!)
-                    )
+                    let error = ErrorResponse.Error(stringResponse.response?.statusCode ?? 500, stringResponse.data, stringResponse.result.error as Error!)
+                    self.processError(error, completion)
+                    completion(nil, error)
                     return
                 }
 
@@ -118,10 +119,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if voidResponse.result.isFailure {
-                    completion(
-                        nil,
-                        ErrorResponse.Error(voidResponse.response?.statusCode ?? 500, voidResponse.data, voidResponse.result.error!)
-                    )
+                    let error = ErrorResponse.Error(voidResponse.response?.statusCode ?? 500, voidResponse.data, voidResponse.result.error!)
+                    self.processError(error, completion)
+                    completion(nil, error)
                     return
                 }
 
@@ -137,10 +137,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if (dataResponse.result.isFailure) {
-                    completion(
-                        nil,
-                        ErrorResponse.Error(dataResponse.response?.statusCode ?? 500, dataResponse.data, dataResponse.result.error!)
-                    )
+                    let error = ErrorResponse.Error(dataResponse.response?.statusCode ?? 500, dataResponse.data, dataResponse.result.error!)
+                    self.processError(error, completion)
+                    completion(nil, error)
                     return
                 }
 
@@ -157,7 +156,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 cleanupRequest()
 
                 if response.result.isFailure {
-                    completion(nil, ErrorResponse.Error(response.response?.statusCode ?? 500, response.data, response.result.error!))
+                    let error = ErrorResponse.Error(response.response?.statusCode ?? 500, response.data, response.result.error!)
+                    self.processError(error, completion)
+                    completion(nil, error)
                     return
                 }
 
@@ -183,12 +184,16 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                     return
                 }
 
-                completion(nil, ErrorResponse.Error(500, nil, NSError(domain: "localhost", code: 500, userInfo: ["reason": "unreacheable code"])))
+                let error = ErrorResponse.Error(500, nil, NSError(domain: "localhost", code: 500, userInfo: ["reason": "unreacheable code"]))
+                self.processError(error, completion)
+                completion(nil, error)
             }
         }
     }
 
-    private func buildHeaders() -> [String: String] {
+    open func processError(_ error: ErrorResponse, _ completion: @escaping (_ response: Response<T>?, _ error: Error?) -> Void) {}
+
+    open func buildHeaders() -> [String: String] {
         var httpHeaders = SessionManager.defaultHTTPHeaders
         for (key, value) in self.headers {
             httpHeaders[key] = value
