@@ -575,6 +575,7 @@ or
 ```
 
 
+
 ### Validating your OpenAPI Spec
 
 You have options.  The easiest is to use our [online validator](https://github.com/swagger-api/validator-badge) which not only will let you validate your spec, but with the debug flag, you can see what's wrong with your spec.  For example:
