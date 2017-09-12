@@ -29,7 +29,7 @@ SWGUserApi::SWGUserApi(QString host, QString basePath) {
 }
 
 void
-SWGUserApi::createUser(User body) {
+SWGUserApi::createUser(SWGUser body) {
     QString fullPath;
     fullPath.append(this->host).append(this->basePath).append("/user");
 
@@ -43,6 +43,10 @@ SWGUserApi::createUser(User body) {
     input.request_body.append(output);
     
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -67,12 +71,16 @@ SWGUserApi::createUserCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit createUserSignal();
-    emit createUserSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit createUserSignal();
+    } else {
+        emit createUserSignalE(error_type, error_str);
+        emit createUserSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
-SWGUserApi::createUsersWithArrayInput(QList<User*>* body) {
+SWGUserApi::createUsersWithArrayInput(QList<SWGUser*>* body) {
     QString fullPath;
     fullPath.append(this->host).append(this->basePath).append("/user/createWithArray");
 
@@ -91,6 +99,10 @@ SWGUserApi::createUsersWithArrayInput(QList<User*>* body) {
     input.request_body.append(bytes);
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -115,12 +127,16 @@ SWGUserApi::createUsersWithArrayInputCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit createUsersWithArrayInputSignal();
-    emit createUsersWithArrayInputSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit createUsersWithArrayInputSignal();
+    } else {
+        emit createUsersWithArrayInputSignalE(error_type, error_str);
+        emit createUsersWithArrayInputSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
-SWGUserApi::createUsersWithListInput(QList<User*>* body) {
+SWGUserApi::createUsersWithListInput(QList<SWGUser*>* body) {
     QString fullPath;
     fullPath.append(this->host).append(this->basePath).append("/user/createWithList");
 
@@ -139,6 +155,10 @@ SWGUserApi::createUsersWithListInput(QList<User*>* body) {
     input.request_body.append(bytes);
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -163,8 +183,12 @@ SWGUserApi::createUsersWithListInputCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit createUsersWithListInputSignal();
-    emit createUsersWithListInputSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit createUsersWithListInputSignal();
+    } else {
+        emit createUsersWithListInputSignalE(error_type, error_str);
+        emit createUsersWithListInputSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
@@ -182,6 +206,10 @@ SWGUserApi::deleteUser(QString* username) {
 
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -206,8 +234,12 @@ SWGUserApi::deleteUserCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit deleteUserSignal();
-    emit deleteUserSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit deleteUserSignal();
+    } else {
+        emit deleteUserSignalE(error_type, error_str);
+        emit deleteUserSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
@@ -225,6 +257,10 @@ SWGUserApi::getUserByName(QString* username) {
 
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -249,11 +285,15 @@ SWGUserApi::getUserByNameCallback(HttpRequestWorker * worker) {
 
 
     QString json(worker->response);
-    User* output = static_cast<User*>(create(json, QString("User")));
+    SWGUser* output = static_cast<SWGUser*>(create(json, QString("SWGUser")));
     worker->deleteLater();
 
-    emit getUserByNameSignal(output);
-    emit getUserByNameSignalE(output, error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit getUserByNameSignal(output);
+    } else {
+        emit getUserByNameSignalE(output, error_type, error_str);
+        emit getUserByNameSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
@@ -286,6 +326,10 @@ SWGUserApi::loginUser(QString* username, QString* password) {
 
 
 
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
+
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
             this,
@@ -312,8 +356,12 @@ SWGUserApi::loginUserCallback(HttpRequestWorker * worker) {
     QString* output = static_cast<QString*>(create(json, QString("QString")));
     worker->deleteLater();
 
-    emit loginUserSignal(output);
-    emit loginUserSignalE(output, error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit loginUserSignal(output);
+    } else {
+        emit loginUserSignalE(output, error_type, error_str);
+        emit loginUserSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
@@ -329,6 +377,10 @@ SWGUserApi::logoutUser() {
 
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -353,12 +405,16 @@ SWGUserApi::logoutUserCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit logoutUserSignal();
-    emit logoutUserSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit logoutUserSignal();
+    } else {
+        emit logoutUserSignalE(error_type, error_str);
+        emit logoutUserSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
-SWGUserApi::updateUser(QString* username, User body) {
+SWGUserApi::updateUser(QString* username, SWGUser body) {
     QString fullPath;
     fullPath.append(this->host).append(this->basePath).append("/user/{username}");
 
@@ -374,6 +430,10 @@ SWGUserApi::updateUser(QString* username, User body) {
     input.request_body.append(output);
     
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -398,8 +458,12 @@ SWGUserApi::updateUserCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit updateUserSignal();
-    emit updateUserSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit updateUserSignal();
+    } else {
+        emit updateUserSignalE(error_type, error_str);
+        emit updateUserSignalEFull(worker, error_type, error_str);
+    }
 }
 
 

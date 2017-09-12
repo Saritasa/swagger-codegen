@@ -36,6 +36,8 @@ public class CodegenTest {
         Assert.assertEquals(codegen.camelize("foo_bar_baz"), "FooBarBaz");
         Assert.assertEquals(codegen.camelize("foo/bar.baz"), "FooBarBaz");
         Assert.assertEquals(codegen.camelize("/foo/bar/baz.qux/corge"), "FooBarBazQuxCorge");
+        Assert.assertEquals(codegen.camelize("foo-bar"), "FooBar");
+        Assert.assertEquals(codegen.camelize("foo-bar-xyzzy"), "FooBarXyzzy");
     }
 
     @Test(description = "read a file upload param from a 2.0 spec")
@@ -402,5 +404,16 @@ public class CodegenTest {
         // resolve inline models
         new InlineModelResolver().flatten(swagger);
         return swagger;
+    }
+
+    @Test(description = "isDeprecated is present")
+    public void deprecatedParamTest() {
+        final Swagger model = parseAndPrepareSwagger("src/test/resources/2_0/petstore.json");
+        final DefaultCodegen codegen = new DefaultCodegen();
+        final String path = "/pet/findByTags";
+        final Operation p = model.getPaths().get(path).getGet();
+        final CodegenOperation op = codegen.fromOperation(path, "get", p, model.getDefinitions());
+
+        Assert.assertTrue(op.isDeprecated);
     }
 }

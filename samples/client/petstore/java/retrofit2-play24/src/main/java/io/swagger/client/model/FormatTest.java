@@ -20,9 +20,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.OffsetDateTime;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
@@ -218,7 +218,7 @@ public class FormatTest {
    * @return _byte
   **/
   @NotNull
-  @ApiModelProperty(required = true, value = "")
+ @Pattern(regexp="^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$")  @ApiModelProperty(required = true, value = "")
   public byte[] getByte() {
     return _byte;
   }
@@ -385,6 +385,6 @@ public class FormatTest {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
 }
 

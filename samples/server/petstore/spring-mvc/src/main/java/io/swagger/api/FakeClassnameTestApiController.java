@@ -29,11 +29,11 @@ public class FakeClassnameTestApiController implements FakeClassnameTestApi {
     }
 
     public ResponseEntity<Client> testClassname(@ApiParam(value = "client model" ,required=true )  @Valid @RequestBody Client body,
-        @RequestHeader(value = "Accept", required = false) String accept) throws IOException {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
 
         if (accept != null && accept.contains("application/json")) {
-            return new ResponseEntity<Client>(objectMapper.readValue("{  \"client\" : \"aeiou\"}", Client.class), HttpStatus.OK);
+            return new ResponseEntity<Client>(objectMapper.readValue("{  \"client\" : \"client\"}", Client.class), HttpStatus.OK);
         }
 
         return new ResponseEntity<Client>(HttpStatus.OK);

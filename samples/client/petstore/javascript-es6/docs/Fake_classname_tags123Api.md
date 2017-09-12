@@ -15,21 +15,27 @@ To test class name in snake case
 
 ### Example
 ```javascript
-var SwaggerPetstore = require('swagger_petstore');
+import SwaggerPetstore from 'swagger_petstore';
+let defaultClient = SwaggerPetstore.ApiClient.instance;
 
-var apiInstance = new SwaggerPetstore.Fake_classname_tags123Api();
+// Configure API key authorization: api_key_query
+let api_key_query = defaultClient.authentications['api_key_query'];
+api_key_query.apiKey = 'YOUR API KEY';
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//api_key_query.apiKeyPrefix = 'Token';
 
-var body = new SwaggerPetstore.Client(); // Client | client model
+let apiInstance = new SwaggerPetstore.Fake_classname_tags123Api();
+
+let body = new SwaggerPetstore.Client(); // Client | client model
 
 
-var callback = function(error, data, response) {
+apiInstance.testClassname(body, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
     console.log('API called successfully. Returned data: ' + data);
   }
-};
-apiInstance.testClassname(body, callback);
+});
 ```
 
 ### Parameters
@@ -44,7 +50,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[api_key_query](../README.md#api_key_query)
 
 ### HTTP request headers
 

@@ -44,6 +44,10 @@ SWGStoreApi::deleteOrder(QString* order_id) {
 
 
 
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
+
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
             this,
@@ -67,8 +71,12 @@ SWGStoreApi::deleteOrderCallback(HttpRequestWorker * worker) {
 
     worker->deleteLater();
 
-    emit deleteOrderSignal();
-    emit deleteOrderSignalE(error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit deleteOrderSignal();
+    } else {
+        emit deleteOrderSignalE(error_type, error_str);
+        emit deleteOrderSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
@@ -84,6 +92,10 @@ SWGStoreApi::getInventory() {
 
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -107,6 +119,7 @@ SWGStoreApi::getInventoryCallback(HttpRequestWorker * worker) {
     }
 
 
+    QMap<QString, qint32>* output;  // TODO add primitive output support
     QMap<QString, qint32>* output = new QMap<QString, qint32>();
     QString json(worker->response);
     QByteArray array (json.toStdString().c_str());
@@ -115,13 +128,17 @@ SWGStoreApi::getInventoryCallback(HttpRequestWorker * worker) {
 
     foreach(QString key, obj.keys()) {
         qint32* val;
-        setValue(&val, obj[key], "QMap", "");
+        setValue(&val, obj[key], "qint32", "");
         output->insert(key, *val);
     }
     worker->deleteLater();
 
-    emit getInventorySignal(output);
-    emit getInventorySignalE(output, error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit getInventorySignal(output);
+    } else {
+        emit getInventorySignalE(output, error_type, error_str);
+        emit getInventorySignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
@@ -139,6 +156,10 @@ SWGStoreApi::getOrderById(qint64 order_id) {
 
 
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -163,15 +184,19 @@ SWGStoreApi::getOrderByIdCallback(HttpRequestWorker * worker) {
 
 
     QString json(worker->response);
-    Order* output = static_cast<Order*>(create(json, QString("Order")));
+    SWGOrder* output = static_cast<SWGOrder*>(create(json, QString("SWGOrder")));
     worker->deleteLater();
 
-    emit getOrderByIdSignal(output);
-    emit getOrderByIdSignalE(output, error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit getOrderByIdSignal(output);
+    } else {
+        emit getOrderByIdSignalE(output, error_type, error_str);
+        emit getOrderByIdSignalEFull(worker, error_type, error_str);
+    }
 }
 
 void
-SWGStoreApi::placeOrder(Order body) {
+SWGStoreApi::placeOrder(SWGOrder body) {
     QString fullPath;
     fullPath.append(this->host).append(this->basePath).append("/store/order");
 
@@ -185,6 +210,10 @@ SWGStoreApi::placeOrder(Order body) {
     input.request_body.append(output);
     
 
+
+    foreach(QString key, this->defaultHeaders.keys()) {
+        input.headers.insert(key, this->defaultHeaders.value(key));
+    }
 
     connect(worker,
             &HttpRequestWorker::on_execution_finished,
@@ -209,11 +238,15 @@ SWGStoreApi::placeOrderCallback(HttpRequestWorker * worker) {
 
 
     QString json(worker->response);
-    Order* output = static_cast<Order*>(create(json, QString("Order")));
+    SWGOrder* output = static_cast<SWGOrder*>(create(json, QString("SWGOrder")));
     worker->deleteLater();
 
-    emit placeOrderSignal(output);
-    emit placeOrderSignalE(output, error_type, error_str);
+    if (worker->error_type == QNetworkReply::NoError) {
+        emit placeOrderSignal(output);
+    } else {
+        emit placeOrderSignalE(output, error_type, error_str);
+        emit placeOrderSignalEFull(worker, error_type, error_str);
+    }
 }
 
 

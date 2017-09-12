@@ -462,6 +462,10 @@ export class PetApi {
         return this._basePath;
     }
 
+    public setDefaultAuthentication(auth: Authentication) {
+	this.authentications.default = auth;
+    }
+
     public setApiKey(key: PetApiApiKeys, value: string) {
         this.authentications[PetApiApiKeys[key]].apiKey = value;
     }
@@ -470,8 +474,8 @@ export class PetApi {
         this.authentications.petstore_auth.accessToken = token;
     }
     /**
-     * Add a new pet to the store
      * 
+     * @summary Add a new pet to the store
      * @param body Pet object that needs to be added to the store
      */
     public addPet (body?: Pet) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -520,8 +524,8 @@ export class PetApi {
         });
     }
     /**
-     * Deletes a pet
      * 
+     * @summary Deletes a pet
      * @param petId Pet id to delete
      * @param apiKey 
      */
@@ -577,8 +581,8 @@ export class PetApi {
         });
     }
     /**
-     * Finds Pets by status
      * Multiple status values can be provided with comma separated strings
+     * @summary Finds Pets by status
      * @param status Status values that need to be considered for filter
      */
     public findPetsByStatus (status?: Array<string>) : Promise<{ response: http.ClientResponse; body: Array<Pet>;  }> {
@@ -589,7 +593,7 @@ export class PetApi {
 
 
         if (status !== undefined) {
-            queryParameters['status'] = ObjectSerializer.serialize(status, "Array&lt;string&gt;");
+            queryParameters['status'] = ObjectSerializer.serialize(status, "Array<string>");
         }
 
 
@@ -620,7 +624,7 @@ export class PetApi {
                 if (error) {
                     reject(error);
                 } else {
-                    body = ObjectSerializer.deserialize(body, "Array&lt;Pet&gt;");
+                    body = ObjectSerializer.deserialize(body, "Array<Pet>");
                     if (response.statusCode >= 200 && response.statusCode <= 299) {
                         resolve({ response: response, body: body });
                     } else {
@@ -631,8 +635,8 @@ export class PetApi {
         });
     }
     /**
-     * Finds Pets by tags
      * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
+     * @summary Finds Pets by tags
      * @param tags Tags to filter by
      */
     public findPetsByTags (tags?: Array<string>) : Promise<{ response: http.ClientResponse; body: Array<Pet>;  }> {
@@ -643,7 +647,7 @@ export class PetApi {
 
 
         if (tags !== undefined) {
-            queryParameters['tags'] = ObjectSerializer.serialize(tags, "Array&lt;string&gt;");
+            queryParameters['tags'] = ObjectSerializer.serialize(tags, "Array<string>");
         }
 
 
@@ -674,7 +678,7 @@ export class PetApi {
                 if (error) {
                     reject(error);
                 } else {
-                    body = ObjectSerializer.deserialize(body, "Array&lt;Pet&gt;");
+                    body = ObjectSerializer.deserialize(body, "Array<Pet>");
                     if (response.statusCode >= 200 && response.statusCode <= 299) {
                         resolve({ response: response, body: body });
                     } else {
@@ -685,8 +689,8 @@ export class PetApi {
         });
     }
     /**
-     * Find pet by ID
-     * Returns a pet when ID &lt; 10.  ID &gt; 10 or nonintegers will simulate API error conditions
+     * Returns a pet when ID < 10.  ID > 10 or nonintegers will simulate API error conditions
+     * @summary Find pet by ID
      * @param petId ID of pet that needs to be fetched
      */
     public getPetById (petId: number) : Promise<{ response: http.ClientResponse; body: Pet;  }> {
@@ -743,8 +747,8 @@ export class PetApi {
         });
     }
     /**
-     * Update an existing pet
      * 
+     * @summary Update an existing pet
      * @param body Pet object that needs to be added to the store
      */
     public updatePet (body?: Pet) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -793,8 +797,8 @@ export class PetApi {
         });
     }
     /**
-     * Updates a pet in the store with form data
      * 
+     * @summary Updates a pet in the store with form data
      * @param petId ID of pet that needs to be updated
      * @param name Updated name of the pet
      * @param status Updated status of the pet
@@ -858,8 +862,8 @@ export class PetApi {
         });
     }
     /**
-     * uploads an image
      * 
+     * @summary uploads an image
      * @param petId ID of pet to update
      * @param additionalMetadata Additional data to pass to server
      * @param file file to upload
@@ -964,6 +968,10 @@ export class StoreApi {
         return this._basePath;
     }
 
+    public setDefaultAuthentication(auth: Authentication) {
+	this.authentications.default = auth;
+    }
+
     public setApiKey(key: StoreApiApiKeys, value: string) {
         this.authentications[StoreApiApiKeys[key]].apiKey = value;
     }
@@ -972,8 +980,8 @@ export class StoreApi {
         this.authentications.petstore_auth.accessToken = token;
     }
     /**
-     * Delete purchase order by ID
-     * For valid response try integer IDs with value &lt; 1000. Anything above 1000 or nonintegers will generate API errors
+     * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
+     * @summary Delete purchase order by ID
      * @param orderId ID of the order that needs to be deleted
      */
     public deleteOrder (orderId: string) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -1025,8 +1033,8 @@ export class StoreApi {
         });
     }
     /**
-     * Returns pet inventories by status
      * Returns a map of status codes to quantities
+     * @summary Returns pet inventories by status
      */
     public getInventory () : Promise<{ response: http.ClientResponse; body: { [key: string]: number; };  }> {
         const localVarPath = this.basePath + '/store/inventory';
@@ -1074,8 +1082,8 @@ export class StoreApi {
         });
     }
     /**
-     * Find purchase order by ID
-     * For valid response try integer IDs with value &lt;&#x3D; 5 or &gt; 10. Other values will generated exceptions
+     * For valid response try integer IDs with value <= 5 or > 10. Other values will generated exceptions
+     * @summary Find purchase order by ID
      * @param orderId ID of pet that needs to be fetched
      */
     public getOrderById (orderId: string) : Promise<{ response: http.ClientResponse; body: Order;  }> {
@@ -1128,8 +1136,8 @@ export class StoreApi {
         });
     }
     /**
-     * Place an order for a pet
      * 
+     * @summary Place an order for a pet
      * @param body order placed for purchasing the pet
      */
     public placeOrder (body?: Order) : Promise<{ response: http.ClientResponse; body: Order;  }> {
@@ -1217,6 +1225,10 @@ export class UserApi {
         return this._basePath;
     }
 
+    public setDefaultAuthentication(auth: Authentication) {
+	this.authentications.default = auth;
+    }
+
     public setApiKey(key: UserApiApiKeys, value: string) {
         this.authentications[UserApiApiKeys[key]].apiKey = value;
     }
@@ -1225,8 +1237,8 @@ export class UserApi {
         this.authentications.petstore_auth.accessToken = token;
     }
     /**
-     * Create user
      * This can only be done by the logged in user.
+     * @summary Create user
      * @param body Created user object
      */
     public createUser (body?: User) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -1273,8 +1285,8 @@ export class UserApi {
         });
     }
     /**
-     * Creates list of users with given input array
      * 
+     * @summary Creates list of users with given input array
      * @param body List of user object
      */
     public createUsersWithArrayInput (body?: Array<User>) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -1294,7 +1306,7 @@ export class UserApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: ObjectSerializer.serialize(body, "Array&lt;User&gt;")
+            body: ObjectSerializer.serialize(body, "Array<User>")
         };
 
         this.authentications.default.applyToRequest(requestOptions);
@@ -1321,8 +1333,8 @@ export class UserApi {
         });
     }
     /**
-     * Creates list of users with given input array
      * 
+     * @summary Creates list of users with given input array
      * @param body List of user object
      */
     public createUsersWithListInput (body?: Array<User>) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -1342,7 +1354,7 @@ export class UserApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: ObjectSerializer.serialize(body, "Array&lt;User&gt;")
+            body: ObjectSerializer.serialize(body, "Array<User>")
         };
 
         this.authentications.default.applyToRequest(requestOptions);
@@ -1369,8 +1381,8 @@ export class UserApi {
         });
     }
     /**
-     * Delete user
      * This can only be done by the logged in user.
+     * @summary Delete user
      * @param username The name that needs to be deleted
      */
     public deleteUser (username: string) : Promise<{ response: http.ClientResponse; body?: any;  }> {
@@ -1422,8 +1434,8 @@ export class UserApi {
         });
     }
     /**
-     * Get user by user name
      * 
+     * @summary Get user by user name
      * @param username The name that needs to be fetched. Use user1 for testing. 
      */
     public getUserByName (username: string) : Promise<{ response: http.ClientResponse; body: User;  }> {
@@ -1476,8 +1488,8 @@ export class UserApi {
         });
     }
     /**
-     * Logs user into the system
      * 
+     * @summary Logs user into the system
      * @param username The user name for login
      * @param password The password for login in clear text
      */
@@ -1533,8 +1545,8 @@ export class UserApi {
         });
     }
     /**
-     * Logs out current logged in user session
      * 
+     * @summary Logs out current logged in user session
      */
     public logoutUser () : Promise<{ response: http.ClientResponse; body?: any;  }> {
         const localVarPath = this.basePath + '/user/logout';
@@ -1579,8 +1591,8 @@ export class UserApi {
         });
     }
     /**
-     * Updated user
      * This can only be done by the logged in user.
+     * @summary Updated user
      * @param username name that need to be deleted
      * @param body Updated user object
      */

@@ -40,31 +40,31 @@ public class FakeApiController implements FakeApi {
     }
 
     public ResponseEntity<Boolean> fakeOuterBooleanSerialize(@ApiParam(value = "Input boolean as post body"  )  @Valid @RequestBody Boolean body,
-        @RequestHeader(value = "Accept", required = false) String accept) throws IOException {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.fakeOuterBooleanSerialize(body);
     }
 
     public ResponseEntity<OuterComposite> fakeOuterCompositeSerialize(@ApiParam(value = "Input composite as post body"  )  @Valid @RequestBody OuterComposite body,
-        @RequestHeader(value = "Accept", required = false) String accept) throws IOException {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.fakeOuterCompositeSerialize(body);
     }
 
     public ResponseEntity<BigDecimal> fakeOuterNumberSerialize(@ApiParam(value = "Input number as post body"  )  @Valid @RequestBody BigDecimal body,
-        @RequestHeader(value = "Accept", required = false) String accept) throws IOException {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.fakeOuterNumberSerialize(body);
     }
 
     public ResponseEntity<String> fakeOuterStringSerialize(@ApiParam(value = "Input string as post body"  )  @Valid @RequestBody String body,
-        @RequestHeader(value = "Accept", required = false) String accept) throws IOException {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.fakeOuterStringSerialize(body);
     }
 
     public ResponseEntity<Client> testClientModel(@ApiParam(value = "client model" ,required=true )  @Valid @RequestBody Client body,
-        @RequestHeader(value = "Accept", required = false) String accept) throws IOException {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.testClientModel(body);
     }
@@ -83,7 +83,7 @@ public class FakeApiController implements FakeApi {
         @ApiParam(value = "None") @RequestPart(value="dateTime", required=false)  OffsetDateTime dateTime,
         @ApiParam(value = "None") @RequestPart(value="password", required=false)  String password,
         @ApiParam(value = "None") @RequestPart(value="callback", required=false)  String paramCallback,
-        @RequestHeader(value = "Accept", required = false) String accept) {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.testEndpointParameters(number, _double, patternWithoutDelimiter, _byte, integer, int32, int64, _float, string, binary, date, dateTime, password, paramCallback);
     }
@@ -92,13 +92,20 @@ public class FakeApiController implements FakeApi {
         @ApiParam(value = "Form parameter enum test (string)", allowableValues="_abc, -efg, (xyz)", defaultValue="-efg") @RequestPart(value="enum_form_string", required=false)  String enumFormString,
         @ApiParam(value = "Header parameter enum test (string array)" , allowableValues=">, $") @RequestHeader(value="enum_header_string_array", required=false) List<String> enumHeaderStringArray,
         @ApiParam(value = "Header parameter enum test (string)" , allowableValues="_abc, -efg, (xyz)", defaultValue="-efg") @RequestHeader(value="enum_header_string", required=false) String enumHeaderString,
-        @ApiParam(value = "Query parameter enum test (string array)", allowableValues = ">, $") @RequestParam(value = "enum_query_string_array", required = false) List<String> enumQueryStringArray,
-        @ApiParam(value = "Query parameter enum test (string)", allowableValues = "_abc, -efg, (xyz)", defaultValue = "-efg") @RequestParam(value = "enum_query_string", required = false, defaultValue="-efg") String enumQueryString,
-        @ApiParam(value = "Query parameter enum test (double)", allowableValues = "1, -2") @RequestParam(value = "enum_query_integer", required = false) Integer enumQueryInteger,
+        @ApiParam(value = "Query parameter enum test (string array)", allowableValues = ">, $") @Valid @RequestParam(value = "enum_query_string_array", required = false) List<String> enumQueryStringArray,
+        @ApiParam(value = "Query parameter enum test (string)", allowableValues = "_abc, -efg, (xyz)", defaultValue = "-efg") @Valid @RequestParam(value = "enum_query_string", required = false, defaultValue="-efg") String enumQueryString,
+        @ApiParam(value = "Query parameter enum test (double)", allowableValues = "1, -2") @Valid @RequestParam(value = "enum_query_integer", required = false) Integer enumQueryInteger,
         @ApiParam(value = "Query parameter enum test (double)", allowableValues="1.1, -1.2") @RequestPart(value="enum_query_double", required=false)  Double enumQueryDouble,
-        @RequestHeader(value = "Accept", required = false) String accept) {
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
         // do some magic!
         return delegate.testEnumParameters(enumFormStringArray, enumFormString, enumHeaderStringArray, enumHeaderString, enumQueryStringArray, enumQueryString, enumQueryInteger, enumQueryDouble);
+    }
+
+    public ResponseEntity<Void> testJsonFormData(@ApiParam(value = "field1", required=true) @RequestPart(value="param", required=true)  String param,
+        @ApiParam(value = "field2", required=true) @RequestPart(value="param2", required=true)  String param2,
+        @RequestHeader(value = "Accept", required = false) String accept) throws Exception {
+        // do some magic!
+        return delegate.testJsonFormData(param, param2);
     }
 
 }

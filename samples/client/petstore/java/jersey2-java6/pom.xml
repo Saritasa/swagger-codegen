@@ -221,7 +221,6 @@
       <artifactId>jackson-datatype-threetenbp</artifactId>
       <version>${jackson-version}</version>
     </dependency>
-
     <!-- Base64 encoding that works in both JVM and Android -->
     <dependency>
       <groupId>com.brsanthu</groupId>
@@ -233,13 +232,11 @@
       <artifactId>commons-lang3</artifactId>
       <version>${commons_lang3_version}</version>
     </dependency>
-
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons_io_version}</version>
     </dependency>
-
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -249,10 +246,10 @@
     </dependency>
   </dependencies>
   <properties>
-    <swagger-core-version>1.5.12</swagger-core-version>
-    <jersey-version>2.22.2</jersey-version>
+    <swagger-core-version>1.5.15</swagger-core-version>
+    <jersey-version>2.6</jersey-version>
     <commons_io_version>2.5</commons_io_version>
-    <commons_lang3_version>3.5</commons_lang3_version>
+    <commons_lang3_version>3.6</commons_lang3_version>
     <jackson-version>2.6.4</jackson-version>
     <maven-plugin-version>1.0.0</maven-plugin-version>
     <junit-version>4.12</junit-version>

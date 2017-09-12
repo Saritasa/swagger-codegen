@@ -57,6 +57,7 @@
      */
     this.authentications = {
       'api_key': {type: 'apiKey', 'in': 'header', name: 'api_key'},
+      'api_key_query': {type: 'apiKey', 'in': 'query', name: 'api_key_query'},
       'http_basic_test': {type: 'basic'},
       'petstore_auth': {type: 'oauth2'}
     };
@@ -174,12 +175,15 @@
    * @returns {Boolean} <code>true</code> if <code>param</code> represents a file.
    */
   exports.prototype.isFileParam = function(param) {
-    // fs.ReadStream in Node.js (but not in runtime like browserify)
-    if (typeof window === 'undefined' &&
-        typeof require === 'function' &&
-        require('fs') &&
-        param instanceof require('fs').ReadStream) {
-      return true;
+    // fs.ReadStream in Node.js and Electron (but not in runtime like browserify)
+    if (typeof require === 'function') {
+      var fs;
+      try {
+        fs = require('fs');
+      } catch (err) {}
+      if (fs && fs.ReadStream && param instanceof fs.ReadStream) {
+        return true;
+      }
     }
     // Buffer in Node.js
     if (typeof Buffer === 'function' && param instanceof Buffer) {
@@ -440,6 +444,8 @@
 
     if (returnType === 'Blob') {
       request.responseType('blob');
+    } else if (returnType === 'String') {
+      request.responseType('string');
     }
 
     // Attach previously saved cookies, if enabled
@@ -462,7 +468,7 @@
             if (_this.enableCookies && typeof window === 'undefined'){
               _this.agent.saveCookies(response);
             }
-            resolve({data, response});
+            resolve({data: data, response: response});
           } catch (err) {
             reject(err);
           }
