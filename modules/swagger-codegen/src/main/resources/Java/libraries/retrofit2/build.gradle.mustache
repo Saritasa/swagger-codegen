@@ -26,9 +26,9 @@ if(hasProperty('target') && target == 'android') {
 
     android {
         compileSdkVersion 25
-        buildToolsVersion '25.0.2'
+        buildToolsVersion '25.0.3'
         defaultConfig {
-            minSdkVersion 14
+            minSdkVersion 16
             targetSdkVersion 25
         }
         compileOptions {
@@ -160,7 +160,7 @@ dependencies {
     compile "io.reactivex:rxjava:$rx_java_version"
     {{/useRxJava}}
     {{#useRxJava2}}
-    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    compile "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
     compile "io.reactivex.rxjava2:rxjava:$rx_java_version"
     {{/useRxJava2}}
     compile "io.swagger:swagger-annotations:$swagger_annotations_version"
