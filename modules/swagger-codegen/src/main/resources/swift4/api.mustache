@@ -58,6 +58,7 @@ open class {{classname}} {
             } else {
                 {{#returnType}}
                 deferred.fulfill(data!)
+                {{/returnType}}
                 {{^returnType}}
                 deferred.fulfill(())
                 {{/returnType}}
