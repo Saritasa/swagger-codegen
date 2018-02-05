@@ -56,7 +56,11 @@ open class {{classname}} {
             if let error = error {
                 deferred.reject(error)
             } else {
-                deferred.fulfill({{#returnType}}data!{{/returnType}})
+                {{#returnType}}
+                deferred.fulfill(data!)
+                {{^returnType}}
+                deferred.fulfill(())
+                {{/returnType}}
             }
         }
         return deferred.promise
