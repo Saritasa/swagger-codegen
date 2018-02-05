@@ -14,6 +14,21 @@ public class Swift3CodegenTest {
     Swift3Codegen swiftCodegen = new Swift3Codegen();
 
     @Test
+    public void testCapitalizedReservedWord() throws Exception {
+        Assert.assertEquals(swiftCodegen.toEnumVarName("AS", null), "_as");
+    }
+
+    @Test
+    public void testReservedWord() throws Exception {
+        Assert.assertEquals(swiftCodegen.toEnumVarName("Public", null), "_public");
+    }
+
+    @Test
+    public void shouldNotBreakNonReservedWord() throws Exception {
+        Assert.assertEquals(swiftCodegen.toEnumVarName("Error", null), "error");
+    }
+
+    @Test
     public void shouldNotBreakCorrectName() throws Exception {
         Assert.assertEquals(swiftCodegen.toEnumVarName("EntryName", null), "entryName");
     }
@@ -48,6 +63,13 @@ public class Swift3CodegenTest {
         Assert.assertEquals(swiftCodegen.toEnumVarName("entry_name", null), "entryName");
     }
 
+    @Test
+    public void testStartingWithNumber() throws Exception {
+        Assert.assertEquals(swiftCodegen.toEnumVarName("123EntryName", null), "_123entryName");
+        Assert.assertEquals(swiftCodegen.toEnumVarName("123Entry_name", null), "_123entryName");
+        Assert.assertEquals(swiftCodegen.toEnumVarName("123EntryName123", null), "_123entryName123");
+    }
+
     @Test(description = "returns NSData when response format is binary")
     public void binaryDataTest() {
         final Swagger model = new SwaggerParser().read("src/test/resources/2_0/binaryDataTest.json");
@@ -60,6 +82,18 @@ public class Swift3CodegenTest {
         Assert.assertEquals(op.bodyParam.dataType, "Data");
         Assert.assertTrue(op.bodyParam.isBinary);
         Assert.assertTrue(op.responses.get(0).isBinary);
+    }
+
+    @Test(description = "returns ISOFullDate when response format is date")
+    public void dateTest() {
+        final Swagger model = new SwaggerParser().read("src/test/resources/2_0/datePropertyTest.json");
+        final DefaultCodegen codegen = new Swift3Codegen();
+        final String path = "/tests/dateResponse";
+        final Operation p = model.getPaths().get(path).getPost();
+        final CodegenOperation op = codegen.fromOperation(path, "post", p, model.getDefinitions());
+
+        Assert.assertEquals(op.returnType, "ISOFullDate");
+        Assert.assertEquals(op.bodyParam.dataType, "ISOFullDate");
     }
 
     @Test

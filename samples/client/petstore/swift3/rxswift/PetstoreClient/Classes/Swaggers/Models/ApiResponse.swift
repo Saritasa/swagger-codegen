@@ -9,6 +9,7 @@ import Foundation
 
 
 open class ApiResponse: JSONEncodable {
+
     public var code: Int32?
     public var type: String?
     public var message: String?
@@ -16,12 +17,14 @@ open class ApiResponse: JSONEncodable {
     public init() {}
 
     // MARK: JSONEncodable
-    func encodeToJSON() -> Any {
+    open func encodeToJSON() -> Any {
         var nillableDictionary = [String:Any?]()
         nillableDictionary["code"] = self.code?.encodeToJSON()
         nillableDictionary["type"] = self.type
         nillableDictionary["message"] = self.message
+
         let dictionary: [String:Any] = APIHelper.rejectNil(nillableDictionary) ?? [:]
         return dictionary
     }
 }
+

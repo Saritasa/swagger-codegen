@@ -2,15 +2,15 @@ package io.swagger.client.api;
 
 import io.swagger.client.CollectionFormats.*;
 
-
 import retrofit2.Call;
 import retrofit2.http.*;
 
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
-import io.swagger.client.model.Pet;
-import io.swagger.client.model.ModelApiResponse;
 import java.io.File;
+import io.swagger.client.model.ModelApiResponse;
+import io.swagger.client.model.Pet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +24,8 @@ public interface PetApi {
    * @param body Pet object that needs to be added to the store (required)
    * @return Call&lt;Void&gt;
    */
-  
   @Headers({
-  	"Content-Type:application/json" 
+    "Content-Type:application/json"
   })
   @POST("pet")
   Call<Void> addPet(
@@ -40,7 +39,6 @@ public interface PetApi {
    * @param apiKey  (optional)
    * @return Call&lt;Void&gt;
    */
-  
   @DELETE("pet/{petId}")
   Call<Void> deletePet(
     @retrofit2.http.Path("petId") Long petId, @retrofit2.http.Header("api_key") String apiKey
@@ -50,9 +48,8 @@ public interface PetApi {
    * Finds Pets by status
    * Multiple status values can be provided with comma separated strings
    * @param status Status values that need to be considered for filter (required)
-   * @return Call&lt;List<Pet>&gt;
+   * @return Call&lt;List&lt;Pet&gt;&gt;
    */
-  
   @GET("pet/findByStatus")
   Call<List<Pet>> findPetsByStatus(
     @retrofit2.http.Query("status") CSVParams status
@@ -62,9 +59,10 @@ public interface PetApi {
    * Finds Pets by tags
    * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
    * @param tags Tags to filter by (required)
-   * @return Call&lt;List<Pet>&gt;
+   * @return Call&lt;List&lt;Pet&gt;&gt;
+   * @deprecated
    */
-  
+  @Deprecated
   @GET("pet/findByTags")
   Call<List<Pet>> findPetsByTags(
     @retrofit2.http.Query("tags") CSVParams tags
@@ -76,7 +74,6 @@ public interface PetApi {
    * @param petId ID of pet to return (required)
    * @return Call&lt;Pet&gt;
    */
-  
   @GET("pet/{petId}")
   Call<Pet> getPetById(
     @retrofit2.http.Path("petId") Long petId
@@ -88,9 +85,8 @@ public interface PetApi {
    * @param body Pet object that needs to be added to the store (required)
    * @return Call&lt;Void&gt;
    */
-  
   @Headers({
-  	"Content-Type:application/json" 
+    "Content-Type:application/json"
   })
   @PUT("pet")
   Call<Void> updatePet(
@@ -105,7 +101,6 @@ public interface PetApi {
    * @param status Updated status of the pet (optional)
    * @return Call&lt;Void&gt;
    */
-  
   @retrofit2.http.FormUrlEncoded
   @POST("pet/{petId}")
   Call<Void> updatePetWithForm(
@@ -120,7 +115,6 @@ public interface PetApi {
    * @param file file to upload (optional)
    * @return Call&lt;ModelApiResponse&gt;
    */
-  
   @retrofit2.http.Multipart
   @POST("pet/{petId}/uploadImage")
   Call<ModelApiResponse> uploadFile(

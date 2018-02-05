@@ -9,6 +9,7 @@ import Foundation
 
 
 open class Pet: JSONEncodable {
+
     public enum Status: String { 
         case available = "available"
         case pending = "pending"
@@ -25,7 +26,7 @@ open class Pet: JSONEncodable {
     public init() {}
 
     // MARK: JSONEncodable
-    func encodeToJSON() -> Any {
+    open func encodeToJSON() -> Any {
         var nillableDictionary = [String:Any?]()
         nillableDictionary["id"] = self.id?.encodeToJSON()
         nillableDictionary["category"] = self.category?.encodeToJSON()
@@ -33,7 +34,9 @@ open class Pet: JSONEncodable {
         nillableDictionary["photoUrls"] = self.photoUrls?.encodeToJSON()
         nillableDictionary["tags"] = self.tags?.encodeToJSON()
         nillableDictionary["status"] = self.status?.rawValue
+
         let dictionary: [String:Any] = APIHelper.rejectNil(nillableDictionary) ?? [:]
         return dictionary
     }
 }
+

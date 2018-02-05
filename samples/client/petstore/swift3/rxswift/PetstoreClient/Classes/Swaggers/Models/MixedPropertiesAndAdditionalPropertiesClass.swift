@@ -9,6 +9,7 @@ import Foundation
 
 
 open class MixedPropertiesAndAdditionalPropertiesClass: JSONEncodable {
+
     public var uuid: UUID?
     public var dateTime: Date?
     public var map: [String:Animal]?
@@ -16,12 +17,14 @@ open class MixedPropertiesAndAdditionalPropertiesClass: JSONEncodable {
     public init() {}
 
     // MARK: JSONEncodable
-    func encodeToJSON() -> Any {
+    open func encodeToJSON() -> Any {
         var nillableDictionary = [String:Any?]()
         nillableDictionary["uuid"] = self.uuid?.encodeToJSON()
         nillableDictionary["dateTime"] = self.dateTime?.encodeToJSON()
         nillableDictionary["map"] = self.map?.encodeToJSON()
+
         let dictionary: [String:Any] = APIHelper.rejectNil(nillableDictionary) ?? [:]
         return dictionary
     }
 }
+

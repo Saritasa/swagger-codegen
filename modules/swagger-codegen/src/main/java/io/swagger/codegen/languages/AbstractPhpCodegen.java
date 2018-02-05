@@ -45,8 +45,8 @@ public abstract class AbstractPhpCodegen extends DefaultCodegen implements Codeg
     protected String apiDirName = "Api";
     protected String modelDirName = "Model";
     protected String variableNamingConvention= "snake_case";
-    protected String apiDocPath = docsBasePath + "/" + apiDirName;
-    protected String modelDocPath = docsBasePath + "/" + modelDirName;
+    protected String apiDocPath = docsBasePath + File.separator + apiDirName;
+    protected String modelDocPath = docsBasePath + File.separator + modelDirName;
 
     public AbstractPhpCodegen() {
         super();
@@ -198,10 +198,10 @@ public abstract class AbstractPhpCodegen extends DefaultCodegen implements Codeg
         additionalProperties.put("escapedInvokerPackage", invokerPackage.replace("\\", "\\\\"));
 
         // make api and model src path available in mustache template
-        additionalProperties.put("apiSrcPath", "./" + toSrcPath(apiPackage, srcBasePath));
-        additionalProperties.put("modelSrcPath", "./" + toSrcPath(modelPackage, srcBasePath));
-        additionalProperties.put("apiTestPath", "./" + testBasePath + "/" + apiDirName);
-        additionalProperties.put("modelTestPath", "./" + testBasePath + "/" + modelDirName);
+        additionalProperties.put("apiSrcPath", "." + File.separator + toSrcPath(apiPackage, srcBasePath));
+        additionalProperties.put("modelSrcPath", "." + File.separator + toSrcPath(modelPackage, srcBasePath));
+        additionalProperties.put("apiTestPath", "." + File.separator + testBasePath + File.separator + apiDirName);
+        additionalProperties.put("modelTestPath", "." + File.separator + testBasePath + File.separator + modelDirName);
 
         // make api and model doc path available in mustache template
         additionalProperties.put("apiDocPath", apiDocPath);
@@ -251,39 +251,42 @@ public abstract class AbstractPhpCodegen extends DefaultCodegen implements Codeg
                 .replaceAll(regLastPathSeparator+ "$", "");
     }
 
-    @Override
-    public String escapeReservedWord(String name) {
+   @Override
+    public String escapeReservedWord(String name) {           
+        if(this.reservedWordsMappings().containsKey(name)) {
+            return this.reservedWordsMappings().get(name);
+        }
         return "_" + name;
     }
 
     @Override
     public String apiFileFolder() {
-        return (outputFolder + "/" + toPackagePath(apiPackage, srcBasePath));
+        return (outputFolder + File.separator + toPackagePath(apiPackage, srcBasePath));
     }
 
     @Override
     public String modelFileFolder() {
-        return (outputFolder + "/" + toPackagePath(modelPackage, srcBasePath));
+        return (outputFolder + File.separator + toPackagePath(modelPackage, srcBasePath));
     }
 
     @Override
     public String apiTestFileFolder() {
-        return (outputFolder + "/" + getPackagePath() + "/" + testBasePath + "/" + apiDirName);
+        return (outputFolder + File.separator + getPackagePath() + File.separator + testBasePath + File.separator + apiDirName);
     }
 
     @Override
     public String modelTestFileFolder() {
-        return (outputFolder + "/" + getPackagePath() + "/" + testBasePath + "/" + modelDirName);
+        return (outputFolder + File.separator + getPackagePath() + File.separator + testBasePath + File.separator + modelDirName);
     }
 
     @Override
     public String apiDocFileFolder() {
-        return (outputFolder + "/" + getPackagePath() + "/" + apiDocPath);
+        return (outputFolder + File.separator + getPackagePath() + File.separator + apiDocPath);
     }
 
     @Override
     public String modelDocFileFolder() {
-        return (outputFolder + "/" + getPackagePath() + "/" + modelDocPath);
+        return (outputFolder + File.separator + getPackagePath() + File.separator + modelDocPath);
     }
 
     @Override
@@ -557,7 +560,7 @@ public abstract class AbstractPhpCodegen extends DefaultCodegen implements Codeg
             example = "new \\DateTime(\"" + escapeText(example) + "\")";
         } else if (!languageSpecificPrimitives.contains(type)) {
             // type is a model class, e.g. User
-            example = "new " + type + "()";
+            example = "new " + getTypeDeclaration(type) + "()";
         } else {
             LOGGER.warn("Type " + type + " not handled properly in setParameterExampleValue");
         }
@@ -589,6 +592,10 @@ public abstract class AbstractPhpCodegen extends DefaultCodegen implements Codeg
 
     @Override
     public String toEnumVarName(String name, String datatype) {
+        if (name.length() == 0) {
+            return "EMPTY";
+        }
+
         // for symbol, e.g. $, #
         if (getSymbolName(name) != null) {
             return (getSymbolName(name)).toUpperCase();
@@ -653,4 +660,12 @@ public abstract class AbstractPhpCodegen extends DefaultCodegen implements Codeg
         return input.replace("*/", "");
     }
 
+    protected String extractSimpleName(String phpClassName) {
+        if (phpClassName == null) {
+            return null;
+        }
+
+        final int lastBackslashIndex = phpClassName.lastIndexOf('\\');
+        return phpClassName.substring(lastBackslashIndex + 1);
+    }
 }

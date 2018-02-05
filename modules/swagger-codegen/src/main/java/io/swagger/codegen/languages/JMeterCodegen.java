@@ -68,7 +68,7 @@ public class JMeterCodegen extends DefaultCodegen implements CodegenConfig {
      * Template Location.  This is the location which templates will be read from.  The generator
      * will use the resource stream to attempt to read the templates.
      */
-    templateDir = "JMeter";
+    embeddedTemplateDir = templateDir = "JMeter";
 
     /*
      * Api Package.  Optional, if needed, this can be used in templates
@@ -115,14 +115,17 @@ public class JMeterCodegen extends DefaultCodegen implements CodegenConfig {
 
   /**
    * Escapes a reserved word as defined in the `reservedWords` array. Handle escaping
-   * those terms here.  This logic is only called if a variable matches the reseved words
+   * those terms here.  This logic is only called if a variable matches the reserved words
    * 
    * @return the escaped term
    */
-  @Override
-  public String escapeReservedWord(String name) {
-    return "_" + name;  // add an underscore to the name
-  }
+    @Override
+    public String escapeReservedWord(String name) {           
+        if(this.reservedWordsMappings().containsKey(name)) {
+            return this.reservedWordsMappings().get(name);
+        }
+        return "_" + name;
+    }
 
   /**
    * Location to write model files.  You can use the modelPackage() as defined when the class is

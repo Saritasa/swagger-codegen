@@ -9,15 +9,18 @@ import Foundation
 
 
 open class ArrayOfNumberOnly: JSONEncodable {
+
     public var arrayNumber: [Double]?
 
     public init() {}
 
     // MARK: JSONEncodable
-    func encodeToJSON() -> Any {
+    open func encodeToJSON() -> Any {
         var nillableDictionary = [String:Any?]()
         nillableDictionary["ArrayNumber"] = self.arrayNumber?.encodeToJSON()
+
         let dictionary: [String:Any] = APIHelper.rejectNil(nillableDictionary) ?? [:]
         return dictionary
     }
 }
+

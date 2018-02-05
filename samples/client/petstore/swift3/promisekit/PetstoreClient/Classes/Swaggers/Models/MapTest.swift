@@ -9,6 +9,7 @@ import Foundation
 
 
 open class MapTest: JSONEncodable {
+
     public enum MapOfEnumString: String { 
         case upper = "UPPER"
         case lower = "lower"
@@ -19,10 +20,12 @@ open class MapTest: JSONEncodable {
     public init() {}
 
     // MARK: JSONEncodable
-    func encodeToJSON() -> Any {
+    open func encodeToJSON() -> Any {
         var nillableDictionary = [String:Any?]()
         nillableDictionary["map_map_of_string"] = self.mapMapOfString?.encodeToJSON()//TODO: handle enum map scenario
+
         let dictionary: [String:Any] = APIHelper.rejectNil(nillableDictionary) ?? [:]
         return dictionary
     }
 }
+

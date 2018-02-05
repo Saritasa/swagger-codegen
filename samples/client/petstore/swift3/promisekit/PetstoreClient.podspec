@@ -5,10 +5,10 @@ Pod::Spec.new do |s|
   s.version = '0.0.1'
   s.source = { :git => 'git@github.com:swagger-api/swagger-mustache.git', :tag => 'v1.0.0' }
   s.authors = ''
-  s.license = 'Apache License, Version 2.0'
+  s.license = 'Proprietary'
   s.homepage = 'https://github.com/swagger-api/swagger-codegen'
   s.summary = 'PetstoreClient'
-  s.source_files = 'PetstoreClient/Classes/Swaggers/**/*.swift'
-  s.dependency 'PromiseKit', '~> 4.0'
-  s.dependency 'Alamofire', '~> 4.0'
+  s.source_files = 'PetstoreClient/Classes/**/*.swift'
+  s.dependency 'PromiseKit/CorePromise', '~> 4.4.0'
+  s.dependency 'Alamofire', '~> 4.5.0'
 end

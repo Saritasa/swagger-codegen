@@ -67,6 +67,7 @@ public class SinatraServerCodegen extends DefaultCodegen implements CodegenConfi
         //TODO binary should be mapped to byte array
         // mapped to String as a workaround
         typeMapping.put("binary", "string");
+        typeMapping.put("UUID", "string");
 
         // remove modelPackage and apiPackage added by default
         cliOptions.clear();
@@ -104,7 +105,10 @@ public class SinatraServerCodegen extends DefaultCodegen implements CodegenConfi
     }
 
     @Override
-    public String escapeReservedWord(String name) {
+    public String escapeReservedWord(String name) {           
+        if(this.reservedWordsMappings().containsKey(name)) {
+            return this.reservedWordsMappings().get(name);
+        }
         return "_" + name;
     }
 
