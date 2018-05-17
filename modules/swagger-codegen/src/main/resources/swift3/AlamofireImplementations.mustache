@@ -26,6 +26,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
      */
     open func createSessionManager() -> Alamofire.SessionManager {
         let configuration = URLSessionConfiguration.default
+        // Disable cache according to #US-4662
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.urlCache = nil
         configuration.httpAdditionalHeaders = buildHeaders()
         return Alamofire.SessionManager(configuration: configuration)
     }
