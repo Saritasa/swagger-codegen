@@ -123,7 +123,7 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         super.importMapping = new HashMap<String, String>();
         importMapping.put("FString", "");
         importMapping.put("TArray", "");
-        importMapping.put("TDateTime", "");
+        importMapping.put("FDateTime", "");
         importMapping.put("TOptional", "");
     }
 
