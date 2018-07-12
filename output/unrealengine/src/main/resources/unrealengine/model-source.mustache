@@ -1,9 +1,9 @@
 {{>licenseInfo}}
 {{#models}}{{#model}}
 
-{{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
 #include "{{classname}}.h"
-#include "JsonSerializer.h"
+{{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
+#include "JsonSerializer_.h"
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}}
