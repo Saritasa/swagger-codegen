@@ -75,6 +75,12 @@ public class Decoders {
         if T.self is Int64.Type && (source is NSNumber || source is String) {
             return source.int64Value as! T;
         }
+        if T.self is Float.Type && (source is NSNumber || source is String) {
+            return source.floatValue as! T;
+        }
+        if T.self is Double.Type && (source is NSNumber || source is String) {
+            return source.doubleValue as! T;
+        }
         if T.self is UUID.Type && source is String {
             return UUID(uuidString: source as! String) as! T
         }
