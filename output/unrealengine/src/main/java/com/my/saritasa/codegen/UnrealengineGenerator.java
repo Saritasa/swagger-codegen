@@ -265,23 +265,24 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
     @Override
     public String getTypeDeclaration(Property p) {
         String swaggerType = getSwaggerType(p);
+        String ret;
         if (p instanceof ArrayProperty) {
             ArrayProperty ap = (ArrayProperty) p;
             Property inner = ap.getItems();
-            return swaggerType + "<" + getTypeDeclaration(inner) + ">";
+            ret = swaggerType + "<" + getTypeDeclaration(inner) + ">";
         } else if (p instanceof MapProperty) {
             MapProperty mp = (MapProperty) p;
             Property inner = mp.getAdditionalProperties();
-
-            return swaggerType + "<FString, " + getTypeDeclaration(inner) + ">";
-        } else if (!p.getRequired()) {
-            return getNullableTypeFor(p);
+            ret = swaggerType + "<FString, " + getTypeDeclaration(inner) + ">";
+        } else {
+            ret = super.getTypeDeclaration(p);
         }
-        return super.getTypeDeclaration(p);
-    }
 
-    private String getNullableTypeFor(Property p) {
-        return "TOptional<" + super.getTypeDeclaration(p) + ">";
+        if (!p.getRequired())
+        {
+            ret = "TOptional<" + ret + ">";
+        }
+        return ret;
     }
 
     @Override
