@@ -3,8 +3,8 @@
 #pragma once
 
 {{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
-#include "{{classname}}.h"
-#include "JsonTestUtils.h"
+#include "{{#apiModelsPath}}{{{apiModelsPath}}}{{/apiModelsPath}}{{classname}}.h"
+#include "{{#jsonUtilsPath}}{{{jsonUtilsPath}}}{{/jsonUtilsPath}}JsonTestUtils.h"
 
 namespace Utils
 {

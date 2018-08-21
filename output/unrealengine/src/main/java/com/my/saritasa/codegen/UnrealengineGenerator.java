@@ -10,9 +10,21 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
 
     public static final String DEFAULT_INCLUDE = "defaultInclude";
 
+    public static final String EXPORT_TYPE_MACRO = "exportTypeMacro";
+
+    public static final String JSON_UTILS_PATH = "jsonUtilsPath";
+
+    public static final String API_MODELS_PATH = "apiModelsPath";
+
     // source folder where to write the files
     protected String apiVersion = "1.0.0";
     protected String defaultInclude = "";
+
+    protected String exportTypeMacro = "";
+
+    protected String jsonUtilsPath = "";
+
+    protected String apiModelsPath = "";
 
     /**
      * Configures the type of generator.
@@ -75,6 +87,17 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
                 "The default include statement that should be placed in all headers for including things like the declspec (convention: #include \"Commons.h\" ",
                 this.defaultInclude);
 
+        addOption(EXPORT_TYPE_MACRO,
+                "Alias for __declspec(dllexport). Empty string means - no export required",
+                this.exportTypeMacro);
+
+        addOption(JSON_UTILS_PATH,
+                "Relative path to Json Utils folder",
+                this.jsonUtilsPath);
+
+        addOption(API_MODELS_PATH,
+                "Relative path to Api Models classes",
+                this.apiModelsPath);
         /**
          * Template Location.  This is the location which templates will be read from.  The generator
          * will use the resource stream to attempt to read the templates.
@@ -124,6 +147,7 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         importMapping.put("FString", "");
         importMapping.put("TArray", "");
         importMapping.put("FDateTime", "");
+        importMapping.put("DateTime", "");
         importMapping.put("TOptional", "");
     }
 
@@ -180,9 +204,24 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
             defaultInclude = additionalProperties.get(DEFAULT_INCLUDE).toString();
         }
 
+        if (additionalProperties.containsKey(EXPORT_TYPE_MACRO)) {
+            exportTypeMacro = additionalProperties.get(EXPORT_TYPE_MACRO).toString();
+        }
+
+        if (additionalProperties.containsKey(JSON_UTILS_PATH)) {
+            jsonUtilsPath = additionalProperties.get(JSON_UTILS_PATH).toString();
+        }
+
+        if (additionalProperties.containsKey(API_MODELS_PATH)) {
+            apiModelsPath = additionalProperties.get(API_MODELS_PATH).toString();
+        }
+
         additionalProperties.put("modelNamespaceDeclarations", modelPackage.split("\\."));
         additionalProperties.put("modelNamespace", modelPackage.replaceAll("\\.", "::"));
         additionalProperties.put("defaultInclude", defaultInclude);
+        additionalProperties.put("exportTypeMacro", exportTypeMacro);
+        additionalProperties.put("jsonUtilsPath", jsonUtilsPath);
+        additionalProperties.put("apiModelsPath", apiModelsPath);
     }
 
     /**
@@ -214,7 +253,7 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
         if (importMapping.containsKey(name)) {
             return importMapping.get(name);
         } else {
-            return "#include \"" + name + ".h\"";
+            return "#include \"" + apiModelsPath + name + ".h\"";
         }
     }
 

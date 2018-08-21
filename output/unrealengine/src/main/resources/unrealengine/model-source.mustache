@@ -1,9 +1,9 @@
 {{>licenseInfo}}
 {{#models}}{{#model}}
 
-#include "{{classname}}.h"
+#include "{{#apiModelsPath}}{{{apiModelsPath}}}{{/apiModelsPath}}{{classname}}.h"
 {{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
-#include "JsonSerializer_.h"
+#include "{{#jsonUtilsPath}}{{{jsonUtilsPath}}}{{/jsonUtilsPath}}JsonSerializer_.h"
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}}

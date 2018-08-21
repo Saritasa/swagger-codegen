@@ -2,7 +2,7 @@
 {{#models}}{{#model}}
 #pragma once
 
-#include "SerializeableModelBase.h"
+#include "{{#jsonUtilsPath}}{{{jsonUtilsPath}}}{{/jsonUtilsPath}}SerializeableModelBase.h"
 {{#imports}}
 {{#this}}{{{this}}}{{/this}}
 {{/imports}}
@@ -14,7 +14,7 @@ namespace {{this}}
 	/// <summary>
 	/// {{description}}
 	/// </summary>
-	class {{classname}} : public Utils::SerializeableModelBase
+	class {{#exportTypeMacro}}{{{exportTypeMacro}}} {{/exportTypeMacro}}{{classname}} : public Utils::SerializeableModelBase
 	{
 	public:
 		{{classname}}();
@@ -35,8 +35,8 @@ namespace {{this}}
 		virtual FString GetModelName() const override;
 	};
 
-	bool operator==(const {{classname}}& left, const {{classname}}& right);
-	bool operator!=(const {{classname}}& left, const {{classname}}& right);
+	bool {{#exportTypeMacro}}{{{exportTypeMacro}}} {{/exportTypeMacro}}operator==(const {{classname}}& left, const {{classname}}& right);
+	bool {{#exportTypeMacro}}{{{exportTypeMacro}}} {{/exportTypeMacro}}operator!=(const {{classname}}& left, const {{classname}}& right);
 {{#modelNamespaceDeclarations}}
 }
 {{/modelNamespaceDeclarations}}
