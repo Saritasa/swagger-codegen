@@ -202,26 +202,26 @@ public class UnrealengineGenerator extends DefaultCodegen implements CodegenConf
 
         if (additionalProperties.containsKey(DEFAULT_INCLUDE)) {
             defaultInclude = additionalProperties.get(DEFAULT_INCLUDE).toString();
+            additionalProperties.put("defaultInclude", defaultInclude);
         }
 
         if (additionalProperties.containsKey(EXPORT_TYPE_MACRO)) {
             exportTypeMacro = additionalProperties.get(EXPORT_TYPE_MACRO).toString();
+            additionalProperties.put("exportTypeMacro", exportTypeMacro);
         }
 
         if (additionalProperties.containsKey(JSON_UTILS_PATH)) {
             jsonUtilsPath = additionalProperties.get(JSON_UTILS_PATH).toString();
+            additionalProperties.put("jsonUtilsPath", jsonUtilsPath);
         }
 
         if (additionalProperties.containsKey(API_MODELS_PATH)) {
             apiModelsPath = additionalProperties.get(API_MODELS_PATH).toString();
+            additionalProperties.put("apiModelsPath", apiModelsPath);
         }
 
         additionalProperties.put("modelNamespaceDeclarations", modelPackage.split("\\."));
         additionalProperties.put("modelNamespace", modelPackage.replaceAll("\\.", "::"));
-        additionalProperties.put("defaultInclude", defaultInclude);
-        additionalProperties.put("exportTypeMacro", exportTypeMacro);
-        additionalProperties.put("jsonUtilsPath", jsonUtilsPath);
-        additionalProperties.put("apiModelsPath", apiModelsPath);
     }
 
     /**

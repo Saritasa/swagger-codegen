@@ -2,8 +2,8 @@
 {{#models}}{{#model}}
 
 #include "{{#apiModelsPath}}{{{apiModelsPath}}}{{/apiModelsPath}}{{classname}}.h"
-{{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
 #include "{{#jsonUtilsPath}}{{{jsonUtilsPath}}}{{/jsonUtilsPath}}JsonSerializer_.h"
+{{#defaultInclude}}#include "{{{defaultInclude}}}"{{/defaultInclude}}
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}}
