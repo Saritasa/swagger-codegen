@@ -11,6 +11,7 @@ import io.swagger.codegen.CodegenModel;
 import io.swagger.codegen.CodegenProperty;
 import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
+import io.swagger.codegen.CodegenOperation;
 import io.swagger.codegen.SupportingFile;
 
 import io.swagger.models.Model;
@@ -565,6 +566,17 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
         return codegenModel;
     }
 
+    @Override
+    public CodegenOperation fromOperation(String path, String httpMethod, Operation operation, Map<String, Model> definitions, Swagger swagger) {
+        CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions, swagger);
+
+        if (op.returnType != null && op.returnType.toString() == "Any") {
+          op.vendorExtensions.put("x-codegen-isNonCodable", true);
+        }
+
+        return op;
+    }
+
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
@@ -697,6 +709,9 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
         //
         // We can drop the check for unwrapRequired in (unwrapRequired && !property.required)
         // due to short-circuit evaluation of the || operator.
+
+        property.required = false;
+
         boolean isSwiftOptional = !unwrapRequired || !property.required;
         boolean isSwiftScalarType = property.isInteger || property.isLong || property.isFloat
                                     || property.isDouble || property.isBoolean;
