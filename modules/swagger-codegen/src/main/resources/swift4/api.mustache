@@ -54,13 +54,13 @@ open class {{classname}} {
         let deferred = Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}>.pending()
         {{operationId}}({{#allParams}}{{paramName}}: {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) { {{#returnType}}data, {{/returnType}}error in
             if let error = error {
-                deferred.reject(error)
+                deferred.resolver.reject(error)
             } else {
                 {{#returnType}}
-                deferred.fulfill(data!)
+                deferred.resolver.fulfill(data!)
                 {{/returnType}}
                 {{^returnType}}
-                deferred.fulfill(())
+                deferred.resolver.fulfill(())
                 {{/returnType}}
             }
         }
@@ -145,7 +145,12 @@ open class {{classname}} {
         ]
         let headerParameters = APIHelper.rejectNilHeaders(nillableHeaders){{/hasMore}}{{/headerParams}}
 
+        {{#vendorExtensions.x-codegen-isNonCodable}}
+        let requestBuilder: RequestBuilder<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}>.Type = {{projectName}}API.requestBuilderFactory.getNonDecodableBuilder()
+        {{/vendorExtensions.x-codegen-isNonCodable}}
+        {{^vendorExtensions.x-codegen-isNonCodable}}
         let requestBuilder: RequestBuilder<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}>.Type = {{projectName}}API.requestBuilderFactory.{{#returnType}}getBuilder(){{/returnType}}{{^returnType}}getNonDecodableBuilder(){{/returnType}}
+        {{/vendorExtensions.x-codegen-isNonCodable}}
 
         return requestBuilder.init(method: "{{httpMethod}}", URLString: (url?.string ?? URLString), parameters: parameters, isBody: {{hasBodyParam}}{{#headerParams}}{{^secondaryParam}}, headers: headerParameters{{/secondaryParam}}{{/headerParams}})
     }
