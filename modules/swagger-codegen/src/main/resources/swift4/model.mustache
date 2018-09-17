@@ -94,9 +94,8 @@ open class {{classname}}: {{#parent}}{{{parent}}}{{/parent}}{{^parent}}Codable{{
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: String.self)
-
         {{#vars}}
-        {{name}} = try container.decode{{^required}}IfPresent{{/required}}({{{datatypeWithEnum}}}.self, forKey: "{{{baseName}}}")
+        {{name}} = try container.decode{{#required}}{{#vendorExtensions}}{{#x-nullable}}IfPresent{{/x-nullable}}{{/vendorExtensions}}{{/required}}{{^required}}IfPresent{{/required}}({{{datatypeWithEnum}}}.self, forKey: "{{{baseName}}}")
         {{/vars}}
         {{#additionalPropertiesType}}
         var nonAdditionalPropertyKeys = Set<String>()

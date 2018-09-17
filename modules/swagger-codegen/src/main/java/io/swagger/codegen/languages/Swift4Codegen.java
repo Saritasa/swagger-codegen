@@ -9,6 +9,7 @@ import io.swagger.codegen.CodegenConfig;
 import io.swagger.codegen.CodegenConstants;
 import io.swagger.codegen.CodegenModel;
 import io.swagger.codegen.CodegenProperty;
+import io.swagger.codegen.CodegenParameter;
 import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
 import io.swagger.codegen.CodegenOperation;
@@ -544,6 +545,7 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
     @Override
     public CodegenModel fromModel(String name, Model model, Map<String, Model> allDefinitions) {
         CodegenModel codegenModel = super.fromModel(name, model, allDefinitions);
+
         if (codegenModel.description != null) {
             codegenModel.imports.add("ApiModel");
         }
@@ -710,7 +712,7 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
         // We can drop the check for unwrapRequired in (unwrapRequired && !property.required)
         // due to short-circuit evaluation of the || operator.
 
-        property.required = false;
+        // property.required = false;
 
         boolean isSwiftOptional = !unwrapRequired || !property.required;
         boolean isSwiftScalarType = property.isInteger || property.isLong || property.isFloat
