@@ -83,7 +83,7 @@ open class {{classname}}: {{#parent}}{{{parent}}}{{/parent}}{{^parent}}Codable{{
         var container = encoder.container(keyedBy: String.self)
 
         {{#vars}}
-        try container.encode{{^required}}IfPresent{{/required}}({{{name}}}, forKey: "{{{baseName}}}")
+        try container.encode{{^required}}IfPresent{{/required}}({{{name}}}, forKey: "{{{baseName}}}"{{#isDate}}, dateFormat: CodableHelper.DateFormat.date{{/isDate}})
         {{/vars}}
         {{#additionalPropertiesType}}
         try container.encodeMap(additionalProperties)
