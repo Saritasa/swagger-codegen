@@ -83,7 +83,7 @@ open class {{classname}}: {{#parent}}{{{parent}}}{{/parent}}{{^parent}}Codable{{
         var container = encoder.container(keyedBy: String.self)
 
         {{#vars}}
-        try container.encode{{^required}}IfPresent{{/required}}({{{name}}}, forKey: "{{{baseName}}}")
+        try container.encode{{^required}}IfPresent{{/required}}({{{name}}}, forKey: "{{{baseName}}}"{{#isDate}}, dateFormat: CodableHelper.DateFormat.date{{/isDate}})
         {{/vars}}
         {{#additionalPropertiesType}}
         try container.encodeMap(additionalProperties)
@@ -95,7 +95,7 @@ open class {{classname}}: {{#parent}}{{{parent}}}{{/parent}}{{^parent}}Codable{{
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: String.self)
         {{#vars}}
-        {{name}} = try container.decode{{#required}}{{#vendorExtensions}}{{#x-nullable}}IfPresent{{/x-nullable}}{{/vendorExtensions}}{{/required}}{{^required}}IfPresent{{/required}}({{{datatypeWithEnum}}}.self, forKey: "{{{baseName}}}"{{#isDate}}, dateFormat: CodableHelper.DateFormat.date{{/isDate}})
+        {{name}} = try container.decode{{#required}}{{#vendorExtensions}}{{#x-nullable}}IfPresent{{/x-nullable}}{{/vendorExtensions}}{{/required}}{{^required}}IfPresent{{/required}}({{{datatypeWithEnum}}}.self, forKey: "{{{baseName}}}")
         {{/vars}}
         {{#additionalPropertiesType}}
         var nonAdditionalPropertyKeys = Set<String>()
