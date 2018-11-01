@@ -11,6 +11,11 @@ public typealias EncodeResult = (data: Data?, error: Error?)
 
 open class CodableHelper {
 
+    public enum DateFormat: String {
+        case dateTime = "date-time"
+        case date = "date"
+    }
+
     open class func decode<T>(_ type: T.Type, from data: Data) -> (decodableObj: T?, error: Error?) where T : Decodable {
         var returnedDecodable: T? = nil
         var returnedError: Error? = nil
@@ -33,6 +38,7 @@ open class CodableHelper {
         var returnedError: Error? = nil
 
         let encoder = JSONEncoder()
+
         if prettyPrint {
             encoder.outputFormatting = .prettyPrinted
         }
@@ -93,5 +99,23 @@ extension JSONEncoder.DateEncodingStrategy {
     static let customISO8601 = custom { date, encoder throws in
         var container = encoder.singleValueContainer()
         try container.encode(Formatter.iso8601.string(from: date))
+    }
+}
+
+
+extension KeyedEncodingContainer {
+    public mutating func encodeIfPresent<T>(_ value: T?, forKey key: KeyedEncodingContainer.Key, dateFormat: CodableHelper.DateFormat?) throws where T : Encodable {
+        if let valueDate = value as? Date, let dateFormat = dateFormat {
+            var dateString: String
+            switch dateFormat {
+            case .dateTime:
+                dateString = Formatter.iso8601.string(from: valueDate)
+            case .date:
+                dateString = Formatter.justyyyyMMdd.string(from: valueDate)
+            }
+            try self.encodeIfPresent(dateString, forKey: key)
+        } else {
+            try self.encodeIfPresent(value, forKey: key)
+        }
     }
 }
