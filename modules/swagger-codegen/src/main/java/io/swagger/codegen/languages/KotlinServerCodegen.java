@@ -2,26 +2,34 @@ package io.swagger.codegen.languages;
 
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache;
-import com.samskivert.mustache.Template;
-import io.swagger.codegen.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
-
-import io.swagger.codegen.mustache.IndentedLambda;
-import io.swagger.codegen.mustache.LowercaseLambda;
-import io.swagger.codegen.mustache.TitlecaseLambda;
-import io.swagger.codegen.mustache.UppercaseLambda;
-import org.apache.commons.lang3.StringUtils;
+import io.swagger.codegen.CliOption;
+import io.swagger.codegen.CodegenConstants;
+import io.swagger.codegen.CodegenModel;
+import io.swagger.codegen.CodegenOperation;
+import io.swagger.codegen.CodegenType;
+import io.swagger.codegen.SupportingFile;
+import io.swagger.codegen.mustache.*;
+import io.swagger.models.ArrayModel;
+import io.swagger.models.Model;
+import io.swagger.models.Operation;
+import io.swagger.models.Swagger;
+import io.swagger.models.parameters.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static io.swagger.codegen.CodegenConstants.GENERATE_APIS;
 
 public class KotlinServerCodegen extends AbstractKotlinCodegen {
 
     public static final String DEFAULT_LIBRARY = Constants.KTOR;
-    static Logger LOGGER = LoggerFactory.getLogger(KotlinServerCodegen.class);
+    public static final String GENERATE_APIS = "generateApis";
+
+    private static Logger LOGGER = LoggerFactory.getLogger(KotlinServerCodegen.class);
     private Boolean autoHeadFeatureEnabled = true;
     private Boolean conditionalHeadersFeatureEnabled = false;
     private Boolean hstsFeatureEnabled = true;
@@ -126,8 +134,14 @@ public class KotlinServerCodegen extends AbstractKotlinCodegen {
     public void processOpts() {
         super.processOpts();
 
+        if (!additionalProperties.containsKey(GENERATE_APIS)) {
+            additionalProperties.put(GENERATE_APIS, true);
+        }
+
         if (additionalProperties.containsKey(CodegenConstants.LIBRARY)) {
             this.setLibrary((String) additionalProperties.get(CodegenConstants.LIBRARY));
+        } else {
+            this.setLibrary(DEFAULT_LIBRARY);
         }
 
         if (additionalProperties.containsKey(Constants.AUTOMATIC_HEAD_REQUESTS)) {
@@ -160,9 +174,9 @@ public class KotlinServerCodegen extends AbstractKotlinCodegen {
             additionalProperties.put(Constants.COMPRESSION, getCompressionFeatureEnabled());
         }
 
-        Boolean generateApis = additionalProperties.containsKey(CodegenConstants.GENERATE_APIS) && (Boolean)additionalProperties.get(CodegenConstants.GENERATE_APIS);
         String packageFolder = (sourceFolder + File.separator + packageName).replace(".", File.separator);
         String resourcesFolder = "src/main/resources"; // not sure this can be user configurable.
+        Boolean generateApis = additionalProperties.containsKey(GENERATE_APIS) && (Boolean)additionalProperties.get(GENERATE_APIS);
 
         supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
         supportingFiles.add(new SupportingFile("Dockerfile.mustache", "", "Dockerfile"));
@@ -191,9 +205,10 @@ public class KotlinServerCodegen extends AbstractKotlinCodegen {
     private void addMustacheLambdas(Map<String, Object> objs) {
 
         Map<String, Mustache.Lambda> lambdas = new ImmutableMap.Builder<String, Mustache.Lambda>()
-                .put("lowercase", new LowercaseLambda())
+                .put("lowercase", new LowercaseLambda().generator(this))
                 .put("uppercase", new UppercaseLambda())
                 .put("titlecase", new TitlecaseLambda())
+                .put("camelcase", new CamelCaseLambda().generator(this))
                 .put("indented", new IndentedLambda())
                 .put("indented_8", new IndentedLambda(8, " "))
                 .put("indented_12", new IndentedLambda(12, " "))

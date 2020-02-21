@@ -38,11 +38,8 @@ public class FakeClassnameTags123Api {
 
     private RequestSpecBuilder reqSpec;
 
-    private JSON json;
-
     private FakeClassnameTags123Api(RequestSpecBuilder reqSpec) {
         this.reqSpec = reqSpec;
-        this.json = new JSON();
     }
 
     public static FakeClassnameTags123Api fakeClassnameTags123(RequestSpecBuilder reqSpec) {
@@ -55,28 +52,16 @@ public class FakeClassnameTags123Api {
     }
 
     /**
-     * Get JSON
-     *
-     * @return JSON object
-     */
-    public JSON getJSON() {
-        return json;
-    }
-
-    /**
-     * Set JSON
-     *
-     * @param json JSON object
-     * @return FakeClassnameTags123Api
-     */
-    public FakeClassnameTags123Api setJSON(JSON json) {
-        this.json = json;
+    * Customise request specification
+    */
+    public FakeClassnameTags123Api reqSpec(Consumer<RequestSpecBuilder> consumer) {
+        consumer.accept(reqSpec);
         return this;
     }
 
     /**
      * To test class name in snake case
-     * 
+     * To test class name in snake case
      *
      * @see #body client model (required)
      * return Client
@@ -116,14 +101,14 @@ public class FakeClassnameTags123Api {
          */
         public Client executeAs(Function<Response, Response> handler) {
             Type type = new TypeToken<Client>(){}.getType();
-            return getJSON().deserialize(execute(handler).asString(), type);
+            return execute(handler).as(type);
         }
 
          /**
          * @param body (Client) client model (required)
          */
         public TestClassnameOper body(Client body) {
-            reqSpec.setBody(getJSON().serialize(body));
+            reqSpec.setBody(body);
             return this;
         }
 

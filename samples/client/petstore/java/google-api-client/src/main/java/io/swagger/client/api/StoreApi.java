@@ -7,8 +7,10 @@ import io.swagger.client.model.Order;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.json.Json;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
@@ -100,6 +102,8 @@ public class StoreApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -124,7 +128,7 @@ public class StoreApi {
     public Map<String, Integer> getInventory() throws IOException {
         HttpResponse response = getInventoryForHttpResponse();
         TypeReference typeRef = new TypeReference<Map<String, Integer>>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Map<String, Integer>)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -138,7 +142,7 @@ public class StoreApi {
     public Map<String, Integer> getInventory(Map<String, Object> params) throws IOException {
         HttpResponse response = getInventoryForHttpResponse(params);
         TypeReference typeRef = new TypeReference<Map<String, Integer>>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Map<String, Integer>)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse getInventoryForHttpResponse() throws IOException {
@@ -166,6 +170,8 @@ public class StoreApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -193,7 +199,7 @@ public class StoreApi {
     public Order getOrderById(Long orderId) throws IOException {
         HttpResponse response = getOrderByIdForHttpResponse(orderId);
         TypeReference typeRef = new TypeReference<Order>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Order)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -210,7 +216,7 @@ public class StoreApi {
     public Order getOrderById(Long orderId, Map<String, Object> params) throws IOException {
         HttpResponse response = getOrderByIdForHttpResponse(orderId, params);
         TypeReference typeRef = new TypeReference<Order>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Order)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse getOrderByIdForHttpResponse(Long orderId) throws IOException {
@@ -250,6 +256,8 @@ public class StoreApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -276,7 +284,7 @@ public class StoreApi {
     public Order placeOrder(Order body) throws IOException {
         HttpResponse response = placeOrderForHttpResponse(body);
         TypeReference typeRef = new TypeReference<Order>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Order)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -292,7 +300,7 @@ public class StoreApi {
     public Order placeOrder(Order body, Map<String, Object> params) throws IOException {
         HttpResponse response = placeOrderForHttpResponse(body, params);
         TypeReference typeRef = new TypeReference<Order>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Order)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse placeOrderForHttpResponse(Order body) throws IOException {
@@ -305,9 +313,25 @@ public class StoreApi {
         String url = uriBuilder.build().toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = body == null ? null : apiClient.new JacksonJsonHttpContent(body);
+        HttpContent content = apiClient.new JacksonJsonHttpContent(body);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
+
+      public HttpResponse placeOrderForHttpResponse(java.io.InputStream body, String mediaType) throws IOException {
+          // verify the required parameter 'body' is set
+              if (body == null) {
+              throw new IllegalArgumentException("Missing the required parameter 'body' when calling placeOrder");
+              }
+              UriBuilder uriBuilder = UriBuilder.fromUri(apiClient.getBasePath() + "/store/order");
+
+              String url = uriBuilder.build().toString();
+              GenericUrl genericUrl = new GenericUrl(url);
+
+              HttpContent content = body == null ?
+                apiClient.new JacksonJsonHttpContent(null) :
+                new InputStreamContent(mediaType == null ? Json.MEDIA_TYPE : mediaType, body);
+              return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
+      }
 
     public HttpResponse placeOrderForHttpResponse(Order body, Map<String, Object> params) throws IOException {
         // verify the required parameter 'body' is set
@@ -326,6 +350,8 @@ public class StoreApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -335,7 +361,7 @@ public class StoreApi {
         String url = uriBuilder.build().toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = body == null ? null : apiClient.new JacksonJsonHttpContent(body);
+        HttpContent content = apiClient.new JacksonJsonHttpContent(body);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
 

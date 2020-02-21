@@ -177,6 +177,10 @@ public interface CodegenConfig {
 
     void setRemoveOperationIdPrefix(boolean removeOperationIdPrefix);
 
+    public boolean isHideGenerationTimestamp();
+
+    public void setHideGenerationTimestamp(boolean hideGenerationTimestamp);
+
     Map<String, String> supportedLibraries();
 
     void setLibrary(String library);
@@ -215,5 +219,17 @@ public interface CodegenConfig {
     String toSetter(String name);
 
     String toGetter(String name);
+
+    String sanitizeName(String name);
+
+    void setSkipAliasGeneration(Boolean skipAliasGeneration);
+
+    Boolean getSkipAliasGeneration();
+
+    boolean getIgnoreImportMapping();
+
+    void setIgnoreImportMapping(boolean ignoreImportMapping);
+
+    boolean defaultIgnoreImportMappingOption();
 
 }

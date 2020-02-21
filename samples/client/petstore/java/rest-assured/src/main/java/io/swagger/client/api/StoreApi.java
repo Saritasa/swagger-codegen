@@ -38,11 +38,8 @@ public class StoreApi {
 
     private RequestSpecBuilder reqSpec;
 
-    private JSON json;
-
     private StoreApi(RequestSpecBuilder reqSpec) {
         this.reqSpec = reqSpec;
-        this.json = new JSON();
     }
 
     public static StoreApi store(RequestSpecBuilder reqSpec) {
@@ -67,22 +64,10 @@ public class StoreApi {
     }
 
     /**
-     * Get JSON
-     *
-     * @return JSON object
-     */
-    public JSON getJSON() {
-        return json;
-    }
-
-    /**
-     * Set JSON
-     *
-     * @param json JSON object
-     * @return StoreApi
-     */
-    public StoreApi setJSON(JSON json) {
-        this.json = json;
+    * Customise request specification
+    */
+    public StoreApi reqSpec(Consumer<RequestSpecBuilder> consumer) {
+        consumer.accept(reqSpec);
         return this;
     }
 
@@ -182,7 +167,7 @@ public class StoreApi {
          */
         public Map<String, Integer> executeAs(Function<Response, Response> handler) {
             Type type = new TypeToken<Map<String, Integer>>(){}.getType();
-            return getJSON().deserialize(execute(handler).asString(), type);
+            return execute(handler).as(type);
         }
 
         /**
@@ -241,7 +226,7 @@ public class StoreApi {
          */
         public Order executeAs(Function<Response, Response> handler) {
             Type type = new TypeToken<Order>(){}.getType();
-            return getJSON().deserialize(execute(handler).asString(), type);
+            return execute(handler).as(type);
         }
 
         /**
@@ -310,14 +295,14 @@ public class StoreApi {
          */
         public Order executeAs(Function<Response, Response> handler) {
             Type type = new TypeToken<Order>(){}.getType();
-            return getJSON().deserialize(execute(handler).asString(), type);
+            return execute(handler).as(type);
         }
 
          /**
          * @param body (Order) order placed for purchasing the pet (required)
          */
         public PlaceOrderOper body(Order body) {
-            reqSpec.setBody(getJSON().serialize(body));
+            reqSpec.setBody(body);
             return this;
         }
 

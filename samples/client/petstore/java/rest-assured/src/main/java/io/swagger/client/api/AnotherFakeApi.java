@@ -38,11 +38,8 @@ public class AnotherFakeApi {
 
     private RequestSpecBuilder reqSpec;
 
-    private JSON json;
-
     private AnotherFakeApi(RequestSpecBuilder reqSpec) {
         this.reqSpec = reqSpec;
-        this.json = new JSON();
     }
 
     public static AnotherFakeApi anotherFake(RequestSpecBuilder reqSpec) {
@@ -55,22 +52,10 @@ public class AnotherFakeApi {
     }
 
     /**
-     * Get JSON
-     *
-     * @return JSON object
-     */
-    public JSON getJSON() {
-        return json;
-    }
-
-    /**
-     * Set JSON
-     *
-     * @param json JSON object
-     * @return AnotherFakeApi
-     */
-    public AnotherFakeApi setJSON(JSON json) {
-        this.json = json;
+    * Customise request specification
+    */
+    public AnotherFakeApi reqSpec(Consumer<RequestSpecBuilder> consumer) {
+        consumer.accept(reqSpec);
         return this;
     }
 
@@ -116,14 +101,14 @@ public class AnotherFakeApi {
          */
         public Client executeAs(Function<Response, Response> handler) {
             Type type = new TypeToken<Client>(){}.getType();
-            return getJSON().deserialize(execute(handler).asString(), type);
+            return execute(handler).as(type);
         }
 
          /**
          * @param body (Client) client model (required)
          */
         public TestSpecialTagsOper body(Client body) {
-            reqSpec.setBody(getJSON().serialize(body));
+            reqSpec.setBody(body);
             return this;
         }
 

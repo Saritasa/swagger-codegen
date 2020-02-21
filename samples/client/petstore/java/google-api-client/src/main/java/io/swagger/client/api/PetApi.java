@@ -9,8 +9,10 @@ import io.swagger.client.model.Pet;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpResponse;
+import com.google.api.client.json.Json;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
@@ -73,9 +75,25 @@ public class PetApi {
         String url = uriBuilder.build().toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = body == null ? null : apiClient.new JacksonJsonHttpContent(body);
+        HttpContent content = apiClient.new JacksonJsonHttpContent(body);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
+
+      public HttpResponse addPetForHttpResponse(java.io.InputStream body, String mediaType) throws IOException {
+          // verify the required parameter 'body' is set
+              if (body == null) {
+              throw new IllegalArgumentException("Missing the required parameter 'body' when calling addPet");
+              }
+              UriBuilder uriBuilder = UriBuilder.fromUri(apiClient.getBasePath() + "/pet");
+
+              String url = uriBuilder.build().toString();
+              GenericUrl genericUrl = new GenericUrl(url);
+
+              HttpContent content = body == null ?
+                apiClient.new JacksonJsonHttpContent(null) :
+                new InputStreamContent(mediaType == null ? Json.MEDIA_TYPE : mediaType, body);
+              return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
+      }
 
     public HttpResponse addPetForHttpResponse(Pet body, Map<String, Object> params) throws IOException {
         // verify the required parameter 'body' is set
@@ -94,6 +112,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -103,7 +123,7 @@ public class PetApi {
         String url = uriBuilder.build().toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = body == null ? null : apiClient.new JacksonJsonHttpContent(body);
+        HttpContent content = apiClient.new JacksonJsonHttpContent(body);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
 
@@ -169,6 +189,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -195,7 +217,7 @@ public class PetApi {
     public List<Pet> findPetsByStatus(List<String> status) throws IOException {
         HttpResponse response = findPetsByStatusForHttpResponse(status);
         TypeReference typeRef = new TypeReference<List<Pet>>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (List<Pet>)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -211,7 +233,7 @@ public class PetApi {
     public List<Pet> findPetsByStatus(List<String> status, Map<String, Object> params) throws IOException {
         HttpResponse response = findPetsByStatusForHttpResponse(status, params);
         TypeReference typeRef = new TypeReference<List<Pet>>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (List<Pet>)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse findPetsByStatusForHttpResponse(List<String> status) throws IOException {
@@ -221,7 +243,15 @@ public class PetApi {
         }
         UriBuilder uriBuilder = UriBuilder.fromUri(apiClient.getBasePath() + "/pet/findByStatus");
         if (status != null) {
-            uriBuilder = uriBuilder.queryParam("status", status);
+            String key = "status";
+            Object value = status;
+            if (value instanceof Collection) {
+                uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+            } else if (value instanceof Object[]) {
+                uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
+            } else {
+                uriBuilder = uriBuilder.queryParam(key, value);
+            }
         }
 
         String url = uriBuilder.build().toString();
@@ -250,6 +280,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -276,7 +308,7 @@ public class PetApi {
     public List<Pet> findPetsByTags(List<String> tags) throws IOException {
         HttpResponse response = findPetsByTagsForHttpResponse(tags);
         TypeReference typeRef = new TypeReference<List<Pet>>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (List<Pet>)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -292,7 +324,7 @@ public class PetApi {
     public List<Pet> findPetsByTags(List<String> tags, Map<String, Object> params) throws IOException {
         HttpResponse response = findPetsByTagsForHttpResponse(tags, params);
         TypeReference typeRef = new TypeReference<List<Pet>>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (List<Pet>)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse findPetsByTagsForHttpResponse(List<String> tags) throws IOException {
@@ -302,7 +334,15 @@ public class PetApi {
         }
         UriBuilder uriBuilder = UriBuilder.fromUri(apiClient.getBasePath() + "/pet/findByTags");
         if (tags != null) {
-            uriBuilder = uriBuilder.queryParam("tags", tags);
+            String key = "tags";
+            Object value = tags;
+            if (value instanceof Collection) {
+                uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+            } else if (value instanceof Object[]) {
+                uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
+            } else {
+                uriBuilder = uriBuilder.queryParam(key, value);
+            }
         }
 
         String url = uriBuilder.build().toString();
@@ -331,6 +371,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -358,7 +400,7 @@ public class PetApi {
     public Pet getPetById(Long petId) throws IOException {
         HttpResponse response = getPetByIdForHttpResponse(petId);
         TypeReference typeRef = new TypeReference<Pet>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Pet)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -375,7 +417,7 @@ public class PetApi {
     public Pet getPetById(Long petId, Map<String, Object> params) throws IOException {
         HttpResponse response = getPetByIdForHttpResponse(petId, params);
         TypeReference typeRef = new TypeReference<Pet>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (Pet)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse getPetByIdForHttpResponse(Long petId) throws IOException {
@@ -415,6 +457,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -466,9 +510,25 @@ public class PetApi {
         String url = uriBuilder.build().toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = body == null ? null : apiClient.new JacksonJsonHttpContent(body);
+        HttpContent content = apiClient.new JacksonJsonHttpContent(body);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.PUT, genericUrl, content).execute();
     }
+
+      public HttpResponse updatePetForHttpResponse(java.io.InputStream body, String mediaType) throws IOException {
+          // verify the required parameter 'body' is set
+              if (body == null) {
+              throw new IllegalArgumentException("Missing the required parameter 'body' when calling updatePet");
+              }
+              UriBuilder uriBuilder = UriBuilder.fromUri(apiClient.getBasePath() + "/pet");
+
+              String url = uriBuilder.build().toString();
+              GenericUrl genericUrl = new GenericUrl(url);
+
+              HttpContent content = body == null ?
+                apiClient.new JacksonJsonHttpContent(null) :
+                new InputStreamContent(mediaType == null ? Json.MEDIA_TYPE : mediaType, body);
+              return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.PUT, genericUrl, content).execute();
+      }
 
     public HttpResponse updatePetForHttpResponse(Pet body, Map<String, Object> params) throws IOException {
         // verify the required parameter 'body' is set
@@ -487,6 +547,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -496,7 +558,7 @@ public class PetApi {
         String url = uriBuilder.build().toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = body == null ? null : apiClient.new JacksonJsonHttpContent(body);
+        HttpContent content = apiClient.new JacksonJsonHttpContent(body);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.PUT, genericUrl, content).execute();
     }
 
@@ -539,7 +601,7 @@ public class PetApi {
         String url = uriBuilder.buildFromMap(uriVariables).toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = null;
+        HttpContent content = apiClient.new JacksonJsonHttpContent(null);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
 
@@ -563,6 +625,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -572,7 +636,7 @@ public class PetApi {
         String url = uriBuilder.buildFromMap(uriVariables).toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = null;
+        HttpContent content = apiClient.new JacksonJsonHttpContent(null);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
 
@@ -590,7 +654,7 @@ public class PetApi {
     public ModelApiResponse uploadFile(Long petId, String additionalMetadata, File file) throws IOException {
         HttpResponse response = uploadFileForHttpResponse(petId, additionalMetadata, file);
         TypeReference typeRef = new TypeReference<ModelApiResponse>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (ModelApiResponse)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
   /**
@@ -605,7 +669,7 @@ public class PetApi {
     public ModelApiResponse uploadFile(Long petId, Map<String, Object> params) throws IOException {
         HttpResponse response = uploadFileForHttpResponse(petId, params);
         TypeReference typeRef = new TypeReference<ModelApiResponse>() {};
-        return apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
+        return (ModelApiResponse)apiClient.getObjectMapper().readValue(response.getContent(), typeRef);
     }
 
     public HttpResponse uploadFileForHttpResponse(Long petId, String additionalMetadata, File file) throws IOException {
@@ -621,7 +685,7 @@ public class PetApi {
         String url = uriBuilder.buildFromMap(uriVariables).toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = null;
+        HttpContent content = apiClient.new JacksonJsonHttpContent(null);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
 
@@ -645,6 +709,8 @@ public class PetApi {
             if (key != null && value != null) {
                 if (value instanceof Collection) {
                     uriBuilder = uriBuilder.queryParam(key, ((Collection) value).toArray());
+                } else if (value instanceof Object[]) {
+                    uriBuilder = uriBuilder.queryParam(key, (Object[]) value);
                 } else {
                     uriBuilder = uriBuilder.queryParam(key, value);
                 }
@@ -654,7 +720,7 @@ public class PetApi {
         String url = uriBuilder.buildFromMap(uriVariables).toString();
         GenericUrl genericUrl = new GenericUrl(url);
 
-        HttpContent content = null;
+        HttpContent content = apiClient.new JacksonJsonHttpContent(null);
         return apiClient.getHttpRequestFactory().buildRequest(HttpMethods.POST, genericUrl, content).execute();
     }
 
