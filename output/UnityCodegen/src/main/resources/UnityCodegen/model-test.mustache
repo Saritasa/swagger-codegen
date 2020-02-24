@@ -1,0 +1,40 @@
+using System.Collections.Generic;
+using {{packageName}}.Model;
+using NUnit.Framework;
+
+// Version: {{appVersion}}
+
+{{#models}}
+{{#model}}
+namespace API.Models.Test
+{
+    public static partial class TestUtils
+    {
+        public static void SetExampleData(ref {{classname}} obj)
+        {
+            if (obj == null)
+            {
+                obj = new {{classname}}();
+            }
+
+        {{#vars}}
+        {{#example}}
+            SetExampleData(ref obj.{{name}}, "{{{example}}}");
+        {{/example}}
+        {{^example}}
+            SetExampleData(ref obj.{{name}});
+        {{/example}}
+        {{/vars}}
+        }
+
+        [Test]
+        public static void Test{{classname}}()
+        {
+            var ret = new {{classname}}();
+            SetExampleData(ref ret);
+            Assert.IsTrue(TestSerialization(ret), "Failed serialization test type {{classname}}");
+        }
+    }
+}
+{{/model}}
+{{/models}}
