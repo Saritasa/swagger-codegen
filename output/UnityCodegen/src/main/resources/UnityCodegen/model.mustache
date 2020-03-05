@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using API.ContractResolvers;
 
 // Version: {{appVersion}}
 
@@ -48,7 +49,10 @@ namespace {{packageName}}.Model
         /// <returns>JSON string presentation of the object</returns>
         public {{#parent}} new {{/parent}}string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(
+                this,
+                Formatting.Indented,
+                OmitNotNullableFieldIfNull.GetSettings());
         }
     }
 {{/model}}
