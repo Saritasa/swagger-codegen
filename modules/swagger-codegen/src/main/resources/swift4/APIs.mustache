@@ -7,10 +7,10 @@
 import Foundation
 
 open class {{projectName}}API {
-    open static var basePath = "{{{basePath}}}"
-    open static var credential: URLCredential?
-    open static var customHeaders: [String:String] = [:]
-    open static var requestBuilderFactory: RequestBuilderFactory = AlamofireRequestBuilderFactory()
+    public static var basePath = "{{{basePath}}}"
+    public static var credential: URLCredential?
+    public static var customHeaders: [String:String] = [:]
+    public static var requestBuilderFactory: RequestBuilderFactory = AlamofireRequestBuilderFactory()
 }
 
 open class RequestBuilder<T> {
@@ -24,7 +24,7 @@ open class RequestBuilder<T> {
     /// Optional block to obtain a reference to the request's progress instance when available.
     public var onProgressReady: ((Progress) -> ())?
 
-    required public init(method: String, URLString: String, parameters: [String:Any]?, isBody: Bool, headers: [String:String] = [:]) {
+    required public init(method: String, URLString: String, parameters: [String: Any]?, isBody: Bool, headers: [String:String] = [:]) {
         self.method = method
         self.URLString = URLString
         self.parameters = parameters
