@@ -207,7 +207,8 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                     completion(
                         Response(
                             response: voidResponse.response!,
-                            body: nil),
+                            body: nil
+                        ),
                         nil
                     )
                 }
@@ -222,7 +223,7 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                         ErrorResponse.error(dataResponse.response?.statusCode ?? 500, request.request, dataResponse.data, error)
                     )
                     return
-                case .success:
+                case let .success(data):
                     completion(
                         Response(
                             response: dataResponse.response!,
@@ -363,6 +364,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                         ),
                         nil
                     )
+                    return
                 }
             })
         case is Data.Type:
@@ -375,7 +377,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                         ErrorResponse.error(dataResponse.response?.statusCode ?? 500, request.request, dataResponse.data, error)
                     )
                     return
-                case .success(_):
+                case let .success(data):
                     completion(
                         Response(
                             response: dataResponse.response!,
@@ -383,6 +385,7 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                         ),
                         nil
                     )
+                    return
                 }
             })
         default:

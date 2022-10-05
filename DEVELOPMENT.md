@@ -18,3 +18,9 @@ Then you can test it like this
 ```sh
 docker run --rm --volume $PWD:/local saritasa-swagger-codegen:2.4.0 generate -i scheme.yaml --lang=swift4 --output=/local/ --config=/local/config.json
 ```
+
+After that run this to check that there are no errors in code
+
+```sh
+pod lib lint --allow-warnings
+```
