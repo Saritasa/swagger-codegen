@@ -1,0 +1,12 @@
+FROM maven:3.8.6-jdk-8 as build
+
+WORKDIR /build
+ARG VERSION
+
+ADD . swagger-codegen
+RUN --mount=type=cache,target=/root/.m2 cd swagger-codegen && \
+    mvn clean package
+
+FROM openjdk:8-jdk-slim-bullseye
+COPY --from=build /build/swagger-codegen/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar swagger-codegen-cli.jar
+ENTRYPOINT ["java", "-jar", "swagger-codegen-cli.jar"]
