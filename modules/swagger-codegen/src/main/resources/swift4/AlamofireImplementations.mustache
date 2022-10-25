@@ -25,6 +25,8 @@ private var managerStore: [String: Alamofire.Session] = [:]
 private let syncQueue = DispatchQueue(label: "thread-safe-sync-queue", attributes: .concurrent)
 
 open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
+    let defaultEmptyResponseCodes: Set<Int> = [200, 201, 204, 205]
+
     required public init(method: String, URLString: String, parameters: [String : Any]?, isBody: Bool, headers: [String : String] = [:]) {
         super.init(method: method, URLString: URLString, parameters: parameters, isBody: isBody, headers: headers)
     }
@@ -124,7 +126,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
 
         switch T.self {
         case is String.Type:
-            validatedRequest.responseString(completionHandler: { (stringResponse) in
+            validatedRequest.responseString(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (stringResponse) in
                 cleanupRequest()
                 switch stringResponse.result {
                 case let .failure(error):
@@ -144,7 +148,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 }
             })
         case is URL.Type:
-            validatedRequest.responseData(completionHandler: { (dataResponse) in
+            validatedRequest.responseData(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (dataResponse) in
                 cleanupRequest()
 
                 do {
@@ -194,7 +200,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 return
             })
         case is Void.Type:
-            validatedRequest.responseData(completionHandler: { (voidResponse) in
+            validatedRequest.responseData(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (voidResponse) in
                 cleanupRequest()
                 switch voidResponse.result {
                 case let .failure(error):
@@ -214,7 +222,9 @@ open class AlamofireRequestBuilder<T>: RequestBuilder<T> {
                 }
             })
         default:
-            validatedRequest.responseData(completionHandler: { (dataResponse) in
+            validatedRequest.responseData(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (dataResponse) in
                 cleanupRequest()
                 switch dataResponse.result {
                 case let .failure(error):
@@ -327,7 +337,9 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
 
         switch T.self {
         case is String.Type:
-            validatedRequest.responseString(completionHandler: { (stringResponse) in
+            validatedRequest.responseString(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (stringResponse) in
                 cleanupRequest()
                 switch stringResponse.result {
                 case let .failure(error):
@@ -347,7 +359,9 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 }
             })
         case is Void.Type:
-            validatedRequest.responseData(completionHandler: { (voidResponse) in
+            validatedRequest.responseData(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (voidResponse) in
                 cleanupRequest()
                 switch voidResponse.result {
                 case let .failure(error):
@@ -368,7 +382,9 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 }
             })
         case is Data.Type:
-            validatedRequest.responseData(completionHandler: { (dataResponse) in
+            validatedRequest.responseData(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (dataResponse) in
                 cleanupRequest()
                 switch dataResponse.result {
                 case let .failure(error):
@@ -389,7 +405,9 @@ open class AlamofireDecodableRequestBuilder<T:Decodable>: AlamofireRequestBuilde
                 }
             })
         default:
-            validatedRequest.responseData(completionHandler: { (dataResponse: AFDataResponse<Data>) in
+            validatedRequest.responseData(
+                emptyResponseCodes: defaultEmptyResponseCodes,
+                completionHandler: { (dataResponse: AFDataResponse<Data>) in
                 cleanupRequest()
                 switch dataResponse.result {
                 case let .failure(error):
