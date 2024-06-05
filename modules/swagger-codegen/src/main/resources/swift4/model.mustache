@@ -79,15 +79,16 @@ open class {{classname}}: {{#parent}}{{{parent}}}{{/parent}}{{^parent}}Codable{{
     // Encodable protocol methods
 
     public {{#parent}}override {{/parent}}func encode(to encoder: Encoder) throws {
-
         var container = encoder.container(keyedBy: String.self)
-
         {{#vars}}
         try container.encode{{^required}}IfPresent{{/required}}({{{name}}}, forKey: "{{{baseName}}}"{{#isDate}}, dateFormat: CodableHelper.DateFormat.date{{/isDate}})
         {{/vars}}
         {{#additionalPropertiesType}}
         try container.encodeMap(additionalProperties)
         {{/additionalPropertiesType}}
+        {{#parent}}
+        try super.encode(to: encoder)
+        {{/parent}}
     }
 
     // Decodable protocol methods
